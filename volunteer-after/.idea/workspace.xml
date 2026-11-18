@@ -6,20 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="fc0e3ea0-1be7-4115-b91e-ac35420620ef" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/controller/AdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/dto/RegisterDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/dto/RegisterDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/service/RegistrationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/service/RegistrationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/api/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/styles/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/styles/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityDetail.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/AdminActivities.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/AdminActivities.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/AdminDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/AdminDashboard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/AdminUsers.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/AdminUsers.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/Profile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/Register.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,23 +49,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.479626742656317" />
-      <entry key="MS500" value="2.916266383974987" />
-      <entry key="S2" value="7.343917696858353" />
-      <entry key="S5" value="14.106787872683345" />
-      <entry key="S10" value="24.236241878337363" />
-      <entry key="S30" value="50.83977415112957" />
-      <entry key="S60" value="68.17825320076682" />
-      <entry key="M2" value="84.15754631310392" />
-      <entry key="M5" value="107.2745594470491" />
-      <entry key="M10" value="123.78547410768962" />
-      <entry key="M15" value="131.4729303251631" />
-      <entry key="M30" value="140.7375648388716" />
-      <entry key="H1" value="146.08831511067075" />
-      <entry key="H2" value="148.96974742595154" />
-      <entry key="H4" value="150.46570340614866" />
-      <entry key="D1" value="151.74157164312228" />
-      <entry key="W1" value="151.96301458184342" />
+      <entry key="MS100" value="1.4760217019465856" />
+      <entry key="MS500" value="2.6929976737267585" />
+      <entry key="S2" value="6.429868543821901" />
+      <entry key="S5" value="14.371129315270894" />
+      <entry key="S10" value="26.196337355808886" />
+      <entry key="S30" value="59.09722099241468" />
+      <entry key="S60" value="82.52216244792932" />
+      <entry key="M2" value="103.61127897271727" />
+      <entry key="M5" value="130.91995904696554" />
+      <entry key="M10" value="149.28404270100114" />
+      <entry key="M15" value="157.70545395657155" />
+      <entry key="M30" value="167.79383180909676" />
+      <entry key="H1" value="173.5991541610543" />
+      <entry key="H2" value="176.72051380989066" />
+      <entry key="H4" value="178.33987912009638" />
+      <entry key="D1" value="179.72042932388237" />
+      <entry key="W1" value="179.95998999607085" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -100,23 +87,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.4216688866073903" />
-      <entry key="MS500" value="2.888789079370908" />
-      <entry key="S2" value="7.274395368878218" />
-      <entry key="S5" value="14.027469321458907" />
-      <entry key="S10" value="24.165751650029364" />
-      <entry key="S30" value="50.79390103388141" />
-      <entry key="S60" value="68.14842576132057" />
-      <entry key="M2" value="84.13974135984002" />
-      <entry key="M5" value="107.2657788411475" />
-      <entry key="M10" value="123.78040845827314" />
-      <entry key="M15" value="131.4693279864819" />
-      <entry key="M30" value="140.7356223455987" />
-      <entry key="H1" value="146.08730181275004" />
-      <entry key="H2" value="148.9692292826542" />
-      <entry key="H4" value="150.46544132816445" />
-      <entry key="D1" value="151.74152753414336" />
-      <entry key="W1" value="151.96300826988994" />
+      <entry key="MS100" value="1.4118015566407907" />
+      <entry key="MS500" value="2.6679925569490113" />
+      <entry key="S2" value="6.390024315501947" />
+      <entry key="S5" value="14.314228722962131" />
+      <entry key="S10" value="26.135229904533034" />
+      <entry key="S30" value="59.04798580895379" />
+      <entry key="S60" value="82.48779632024085" />
+      <entry key="M2" value="103.59003891379956" />
+      <entry key="M5" value="130.90943840593974" />
+      <entry key="M10" value="149.2780308218571" />
+      <entry key="M15" value="157.7012008844859" />
+      <entry key="M30" value="167.79155271647204" />
+      <entry key="H1" value="173.5979694349789" />
+      <entry key="H2" value="176.71990912124096" />
+      <entry key="H4" value="178.33957355479785" />
+      <entry key="D1" value="179.7203779365938" />
+      <entry key="W1" value="179.95998264360546" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
