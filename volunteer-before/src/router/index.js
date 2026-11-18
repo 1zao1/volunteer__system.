@@ -9,7 +9,27 @@ const routes = [
   { path: '/activity/:id', component: () => import('../views/ActivityDetail.vue') },
   { path: '/my-registrations', component: () => import('../views/MyRegistrations.vue') },
   { path: '/my-hours', component: () => import('../views/MyHours.vue') },
-  { path: '/admin', component: () => import('../views/AdminDashboard.vue'), meta: { roles: ['admin', 'organizer'] } }
+  {
+    path: '/dashboard',
+    component: () => import('../views/AdminDashboard.vue'),
+    meta: { roles: ['admin', 'organizer'] }
+  },
+  {
+    path: '/admin/activities',
+    component: () => import('../views/AdminActivities.vue'),
+    meta: { roles: ['admin', 'organizer'] }
+  },
+  {
+    path: '/admin/audit',
+    component: () => import('../views/AdminAudit.vue'),
+    meta: { roles: ['admin', 'organizer'] }
+  },
+  {
+    path: '/admin/users',
+    component: () => import('../views/AdminUsers.vue'),
+    meta: { roles: ['admin'] }
+  },
+  { path: '/:pathMatch(.*)*', redirect: '/activities' }
 ]
 
 const router = createRouter({
@@ -20,8 +40,8 @@ const router = createRouter({
 router.beforeEach((to) => {
   const auth = useAuthStore()
   if (!to.meta.guest && !auth.isLogin) return '/login'
-  if (to.meta.roles && !to.meta.roles.includes(auth.role)) return '/activities'
   if (to.meta.guest && auth.isLogin) return '/activities'
+  if (to.meta.roles && !to.meta.roles.includes(auth.role)) return '/activities'
 })
 
 export default router

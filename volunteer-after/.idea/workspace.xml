@@ -4,7 +4,39 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fc0e3ea0-1be7-4115-b91e-ac35420620ef" name="更改" comment="" />
+    <list default="true" id="fc0e3ea0-1be7-4115-b91e-ac35420620ef" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/api/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/api/request.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/api/request.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/assets/base.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/assets/logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/assets/main.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/HelloWorld.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/NavBar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/components/NavBar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/TheWelcome.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/WelcomeItem.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/icons/IconCommunity.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/icons/IconDocumentation.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/icons/IconEcosystem.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/icons/IconSupport.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/icons/IconTooling.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/css/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/store/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/store/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/AdminDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/AdminDashboard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/MyHours.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/MyHours.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/MyRegistrations.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/MyRegistrations.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/Register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/vite.config.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,8 +50,20 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "1zao1"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/1zao1/volunteer__system..git",
+    "accountId": "5020ab7f-31d2-4f1a-8b92-87869099f898"
+  }
+}]]></component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -34,23 +78,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0000002663979943" />
-      <entry key="MS500" value="1.1022589856043605" />
-      <entry key="S2" value="2.2868180414483708" />
-      <entry key="S5" value="3.798433424544496" />
-      <entry key="S10" value="6.324188125227684" />
-      <entry key="S30" value="11.383178925890835" />
-      <entry key="S60" value="14.717260227881109" />
-      <entry key="M2" value="21.1401227930104" />
-      <entry key="M5" value="37.053226719651654" />
-      <entry key="M10" value="50.10132638529689" />
-      <entry key="M15" value="56.30903100151134" />
-      <entry key="M30" value="63.83260585769657" />
-      <entry key="H1" value="68.1870828089133" />
-      <entry key="H2" value="70.5329431118755" />
-      <entry key="H4" value="71.75088799290121" />
-      <entry key="D1" value="72.78961235553308" />
-      <entry key="W1" value="72.9698901860202" />
+      <entry key="MS100" value="1.3618326805698582" />
+      <entry key="MS500" value="2.534062040390732" />
+      <entry key="S2" value="5.922259264387484" />
+      <entry key="S5" value="11.12471226852826" />
+      <entry key="S10" value="16.39833768678956" />
+      <entry key="S30" value="25.994950225792067" />
+      <entry key="S60" value="31.65427114230059" />
+      <entry key="M2" value="39.40439759126062" />
+      <entry key="M5" value="56.298330611986366" />
+      <entry key="M10" value="69.95420879902588" />
+      <entry key="M15" value="76.45864935702289" />
+      <entry key="M30" value="84.3554613465651" />
+      <entry key="H1" value="88.93346069385106" />
+      <entry key="H2" value="91.40207593649184" />
+      <entry key="H4" value="92.68440115122661" />
+      <entry key="D1" value="93.77838147647361" />
+      <entry key="W1" value="93.96828206175877" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -72,23 +116,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9659365854525228" />
-      <entry key="MS500" value="1.0945186051224802" />
-      <entry key="S2" value="2.2823428337501834" />
-      <entry key="S5" value="3.7927330443088603" />
-      <entry key="S10" value="6.315769782512904" />
-      <entry key="S30" value="11.376404514290723" />
-      <entry key="S60" value="14.712817462925539" />
-      <entry key="M2" value="21.137050954404064" />
-      <entry key="M5" value="37.050916194739905" />
-      <entry key="M10" value="50.099622956862476" />
-      <entry key="M15" value="56.30770675462768" />
-      <entry key="M30" value="63.8318245061309" />
-      <entry key="H1" value="68.18665657222971" />
-      <entry key="H2" value="70.53272027108719" />
-      <entry key="H4" value="71.75077402990205" />
-      <entry key="D1" value="72.78959299866008" />
-      <entry key="W1" value="72.96988741172999" />
+      <entry key="MS100" value="1.2712836225681412" />
+      <entry key="MS500" value="2.5040732309320686" />
+      <entry key="S2" value="5.896776293832072" />
+      <entry key="S5" value="11.093858490594434" />
+      <entry key="S10" value="16.36900733616602" />
+      <entry key="S30" value="25.97620235669519" />
+      <entry key="S60" value="31.642562105839016" />
+      <entry key="M2" value="39.39730840918624" />
+      <entry key="M5" value="56.29431660048202" />
+      <entry key="M10" value="69.95162987452716" />
+      <entry key="M15" value="76.45673373208298" />
+      <entry key="M30" value="84.35437932344978" />
+      <entry key="H1" value="88.93288258793648" />
+      <entry key="H2" value="91.40177673323927" />
+      <entry key="H4" value="92.68424889384903" />
+      <entry key="D1" value="93.77835572093304" />
+      <entry key="W1" value="93.9682783729672" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -106,7 +150,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/school_practice/volunteer/volunteer-after",

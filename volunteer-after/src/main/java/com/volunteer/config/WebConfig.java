@@ -6,13 +6,15 @@ import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    @Autowired private JwtInterceptor jwtInterceptor;
+
+    @Autowired
+    private JwtInterceptor jwtInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/auth/**"); // 登录注册放行
+                .excludePathPatterns("/api/auth/**");
     }
 
     @Override

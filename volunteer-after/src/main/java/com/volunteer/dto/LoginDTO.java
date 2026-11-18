@@ -1,3 +1,9 @@
 package com.volunteer.dto;
+
 import lombok.Data;
-@Data public class LoginDTO { private String username; private String password; }
+
+@Data
+public class LoginDTO {
+    private String username;
+    private String password;
+}

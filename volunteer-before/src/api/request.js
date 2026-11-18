@@ -4,7 +4,7 @@ import router from '../router'
 
 const request = axios.create({
   baseURL: 'http://localhost:8080/api',
-  timeout: 10000
+  timeout: 15000
 })
 
 request.interceptors.request.use(config => {
@@ -15,15 +15,21 @@ request.interceptors.request.use(config => {
 
 request.interceptors.response.use(
   res => {
-    if (res.data.code !== 200) throw new Error(res.data.message)
-    return res.data.data
+    const body = res.data
+    // 后端统一返回 { code, message, data }
+    if (body && typeof body.code === 'number' && body.code !== 200) {
+      return Promise.reject(new Error(body.message || '请求失败'))
+    }
+    return body ? body.data : body
   },
   err => {
-    if (err.response?.status === 401) {
+    const status = err.response?.status
+    const msg = err.response?.data?.message || err.message || '网络异常，请稍后重试'
+    if (status === 401) {
       useAuthStore().logout()
       router.push('/login')
     }
-    return Promise.reject(new Error(err.response?.data?.message || err.message || '请求失败'))
+    return Promise.reject(new Error(msg))
   }
 )
 

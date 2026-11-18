@@ -1,46 +1,137 @@
 <template>
-  <h4 class="mb-4"><i class="bi bi-list-ul"></i> 活动广场</h4>
-  <div class="row">
-    <div class="col-md-6 col-lg-4 mb-4" v-for="a in activities" :key="a.id">
-      <div class="card activity-card h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <span class="badge bg-info text-dark">{{ a.category }}</span>
-            <span class="badge" :class="a.signedCount >= a.maxCount ? 'bg-danger' : 'bg-success'">
-              {{ a.signedCount >= a.maxCount ? '已满员' : `余位 ${a.maxCount - a.signedCount}` }}
-            </span>
-          </div>
-          <h5 class="card-title mt-3">{{ a.title }}</h5>
-          <p class="text-muted small mb-1"><i class="bi bi-geo-alt"></i> {{ a.location }}</p>
-          <p class="text-muted small mb-1"><i class="bi bi-clock"></i> {{ a.startTime }} ~ {{ a.endTime }}</p>
-          <p class="text-muted small"><i class="bi bi-hourglass"></i> 计 {{ a.hours }} 工时</p>
-        </div>
-        <div class="card-footer bg-white border-0 d-flex gap-2">
-          <router-link :to="`/activity/${a.id}`" class="btn btn-outline-success btn-sm flex-fill">查看详情</router-link>
-          <button class="btn btn-success btn-sm flex-fill" :disabled="a.signedCount >= a.maxCount" @click="signup(a.id)">报名</button>
-        </div>
+  <section class="hero">
+    <div class="hero-badge"><i class="bi bi-stars"></i> 承德市社区志愿服务平台</div>
+    <h1>让善意流动，<br />让每一次<em>付出</em>都有回响</h1>
+    <p>从社区义诊到赛事保障，挑一个与你时间、技能都合拍的活动，报名只需一步。</p>
+
+    <div class="search">
+      <i class="bi bi-search"></i>
+      <input v-model.trim="keyword" placeholder="搜索活动名称，如：义诊、马拉松、支教…" />
+      <button v-if="keyword" class="btn btn-ghost btn-sm" @click="keyword = ''">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="stats-strip">
+      <div class="item">
+        <div class="num">{{ overview.activityCount ?? '—' }}<small>场</small></div>
+        <div class="label">正在招募的活动</div>
+      </div>
+      <div class="item">
+        <div class="num">{{ overview.volunteerCount ?? '—' }}<small>人</small></div>
+        <div class="label">注册志愿者</div>
+      </div>
+      <div class="item">
+        <div class="num">{{ overview.hoursTotal ?? '—' }}<small>h</small></div>
+        <div class="label">累计认定工时</div>
+      </div>
+      <div class="item">
+        <div class="num">{{ overview.signupCount ?? '—' }}<small>次</small></div>
+        <div class="label">累计报名人次</div>
       </div>
     </div>
+  </section>
+
+  <div class="chips">
+    <button class="chip" :class="{ active: category === '全部' }" @click="category = '全部'">
+      全部 <span class="count">{{ list.length }}</span>
+    </button>
+    <button
+      v-for="c in categories"
+      :key="c.name"
+      class="chip"
+      :class="{ active: category === c.name }"
+      @click="category = c.name"
+    >
+      {{ c.name }} <span class="count">{{ c.count }}</span>
+    </button>
   </div>
+
+  <div v-if="err" class="panel" style="display: flex; gap: 14px; align-items: center; padding: 20px 22px">
+    <i class="bi bi-exclamation-triangle-fill" style="font-size: 22px; color: #c2410c"></i>
+    <div style="flex: 1">
+      <div class="strong">活动数据加载失败</div>
+      <div class="muted" style="font-size: 13px; margin-top: 2px">{{ err }}</div>
+    </div>
+    <button class="btn btn-primary btn-sm" @click="load">重新加载</button>
+  </div>
+
+  <div class="cards-grid" v-else-if="filtered.length">
+    <ActivityCard v-for="a in filtered" :key="a.id" :a="a" @signup="signup" />
+  </div>
+
+  <div v-else-if="loading" class="cards-grid">
+    <div v-for="i in 3" :key="i" class="card" style="height: 330px">
+      <div class="skeleton" style="height: 100%"></div>
+    </div>
+  </div>
+
+  <EmptyState
+    v-else
+    icon="bi-calendar-x"
+    title="没有匹配的活动"
+    desc="换个关键词或分类试试，新的活动每周都会上架。"
+  />
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import api from '../api'
+import ActivityCard from '../components/ActivityCard.vue'
+import EmptyState from '../components/EmptyState.vue'
+import { toast } from '../utils/toast'
+import { useAuthStore } from '../store/auth'
 
-const activities = ref([])
+const auth = useAuthStore()
+const list = ref([])
+const overview = ref({})
+const keyword = ref('')
+const category = ref('全部')
+const loading = ref(true)
+const err = ref('')
 
-onMounted(async () => {
-  activities.value = await api.getActivities()
+const categories = computed(() => {
+  const map = new Map()
+  list.value.forEach((a) => map.set(a.category, (map.get(a.category) || 0) + 1))
+  return [...map.entries()].map(([name, count]) => ({ name, count }))
 })
 
-async function signup(id) {
+const filtered = computed(() =>
+  list.value.filter((a) => {
+    const okCat = category.value === '全部' || a.category === category.value
+    const okKey =
+      !keyword.value ||
+      (a.title || '').includes(keyword.value) ||
+      (a.location || '').includes(keyword.value)
+    return okCat && okKey
+  })
+)
+
+async function load() {
+  loading.value = true
+  err.value = ''
   try {
-    await api.signup(id)
-    alert('报名成功，等待审核')
-    activities.value = await api.getActivities()
+    const [acts, ov] = await Promise.all([api.getActivities(), api.getOverview()])
+    list.value = Array.isArray(acts) ? acts : acts?.data || []
+    overview.value = ov || {}
   } catch (e) {
-    alert(e.message)
+    err.value = e.message
+    toast.error(e.message)
+  } finally {
+    loading.value = false
   }
 }
+
+async function signup(a) {
+  if (auth.role === 'admin') return toast.error('管理员请到「活动管理」中操作')
+  try {
+    await api.signup(a.id)
+    toast.success('报名成功，等待组织者审核')
+    await load()
+  } catch (e) {
+    toast.error(e.message)
+  }
+}
+
+onMounted(load)
 </script>
