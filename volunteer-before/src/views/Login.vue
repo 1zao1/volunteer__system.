@@ -59,7 +59,7 @@
         </div>
 
         <div class="auth-foot">
-          还没有账号？<router-link to="/register">注册成为志愿者</router-link>
+          还没有账号？<router-link to="/register">注册账号</router-link>
         </div>
       </div>
     </main>

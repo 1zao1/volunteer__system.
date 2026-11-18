@@ -15,7 +15,7 @@
 
   <!-- 管理员视角 -->
   <template v-if="isAdmin">
-    <div class="stats-grid">
+    <div class="stats-grid five">
       <div class="stat">
         <div class="icon green"><i class="bi bi-calendar2-week"></i></div>
         <div>
@@ -31,17 +31,24 @@
         </div>
       </div>
       <div class="stat">
+        <div class="icon sky"><i class="bi bi-megaphone"></i></div>
+        <div>
+          <div class="num">{{ d.organizers ?? 0 }}</div>
+          <div class="label">注册组织者</div>
+        </div>
+      </div>
+      <div class="stat">
         <div class="icon amber"><i class="bi bi-hourglass-split"></i></div>
         <div>
           <div class="num">{{ d.totalHours ?? 0 }}</div>
-          <div class="label">累计认定工时（小时）</div>
+          <div class="label">全站已认定工时（小时）</div>
         </div>
       </div>
       <div class="stat" style="cursor: pointer" @click="$router.push('/admin/users')">
         <div class="icon rose"><i class="bi bi-shield-exclamation"></i></div>
         <div>
           <div class="num">{{ d.lowCredit ?? 0 }}</div>
-          <div class="label">低信誉志愿者（&lt;85 分）</div>
+          <div class="label">低信誉账号（&lt;85 分）</div>
         </div>
       </div>
     </div>
@@ -62,7 +69,7 @@
           </div>
           <div v-if="!(d.creditDist || []).length" class="muted">暂无数据</div>
         </div>
-        <div class="hint">低于 80 分暂停报名新活动；85 分时再违约一次即成为「低信誉志愿者」。</div>
+        <div class="hint">违约扣 5 分；低于 85 分即低信誉（同时只能 1 个未完成报名），低于 60 分暂停报名；每 2 小时恢复 1 分，上限 85 分。</div>
       </div>
 
       <div class="panel">

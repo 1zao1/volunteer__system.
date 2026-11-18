@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -23,8 +24,10 @@ public class UserService {
 
     /** 信誉分恢复上限：低于该分数时每 2 小时恢复 1 分，直到回到 85 */
     public static final int CREDIT_FLOOR = 85;
-    /** 低于该分数视为「低信誉志愿者」，暂停报名新活动 */
-    public static final int CREDIT_BLOCK = 80;
+    /** 低于该分数视为「低信誉」：报名数量受限，每 2 小时恢复 1 分 */
+    public static final int CREDIT_BLOCK = 85;
+    /** 低于该分数视为「失信」：暂停报名新活动，只能等时间恢复 */
+    public static final int CREDIT_MIN = 60;
 
     @Autowired
     private UserMapper userMapper;
@@ -44,7 +47,12 @@ public class UserService {
         u.setNickname(dto.getUsername());
         u.setPassword(dto.getPassword());
         u.setPhone(dto.getPhone());
-        u.setRole("volunteer");
+        String role = StringUtils.hasText(dto.getRole()) ? dto.getRole().trim() : "volunteer";
+        if (!Arrays.asList("volunteer", "organizer", "admin").contains(role)) {
+            throw new RuntimeException("注册角色只能是 volunteer / organizer / admin");
+        }
+        // 管理员账号不能自助生效，先进待认证队列，由总管理员在「用户与信誉」页确认
+        u.setRole("admin".equals(role) ? "admin_pending" : role);
         u.setCreditScore(100);
         u.setCreditTime(LocalDateTime.now());
         u.setSkills(joinSkills(dto.getSkills()));
@@ -68,6 +76,9 @@ public class UserService {
                 .eq(User::getUsername, dto.getUsername()));
         if (u == null || !u.getPassword().equals(dto.getPassword())) {
             throw new RuntimeException("用户名或密码错误");
+        }
+        if ("admin_pending".equals(u.getRole())) {
+            throw new RuntimeException("管理员账号正在等待总管理员认证，通过后才能登录");
         }
         LoginVO vo = new LoginVO();
         vo.setToken(jwtUtil.generate(u.getId(), u.getRole()));

@@ -108,6 +108,15 @@
           >
             <span>{{ c.name.split(' · ')[0] }}</span>
           </button>
+          <button class="cover-thumb upload-cover" title="从桌面上传图片" @click="pickCoverFile">
+            <i class="bi bi-upload"></i>
+            <span>{{ isLocalCover ? '已上传本地图片' : '从本地上传' }}</span>
+          </button>
+          <input ref="coverInput" type="file" accept="image/*" style="display: none" @change="onCoverFile" />
+        </div>
+        <div v-if="isLocalCover" class="cover-local-hint">
+          <span class="thumb" :style="{ backgroundImage: `url(${form.cover})` }"></span>
+          <span class="muted">当前使用本地图片（已压缩），点上方其他插画可替换</span>
         </div>
         <div class="field" style="margin-top: 10px">
           <input v-model.trim="form.cover" class="input" placeholder="也可粘贴自定义图片地址 https://…" />
@@ -187,6 +196,38 @@ const canManage = computed(() => auth.role === 'organizer')
 const list = ref([])
 const showModal = ref(false)
 const saving = ref(false)
+const coverInput = ref(null)
+const isLocalCover = computed(() => (form.cover || '').startsWith('data:image'))
+
+function pickCoverFile() {
+  coverInput.value?.click()
+}
+
+function onCoverFile(e) {
+  const f = e.target.files?.[0]
+  if (!f) return
+  if (f.size > 8 * 1024 * 1024) return toast.error('图片超过 8MB，请压缩后再上传')
+  const reader = new FileReader()
+  reader.onload = () => {
+    const img = new Image()
+    img.onload = () => {
+      const maxW = 1600
+      const scale = Math.min(1, maxW / img.width)
+      const w = Math.round(img.width * scale)
+      const h = Math.round(img.height * scale)
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, w, h)
+      form.cover = canvas.toDataURL('image/jpeg', 0.82)
+      toast.success('封面已上传')
+    }
+    img.src = reader.result
+  }
+  reader.readAsDataURL(f)
+  e.target.value = ''
+}
 
 const blank = () => ({
   id: 0,

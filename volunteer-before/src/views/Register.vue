@@ -3,33 +3,33 @@
     <aside class="auth-side">
       <div>
         <div class="brand">
-          <span class="logo-mark"><i class="bi bi-heart-pulse"></i></span>
+          <span class="logo-mark"><i class="bi bi-stars"></i></span>
           <span>予光 · YuGuang</span>
         </div>
         <h2>加入我们，<br />把<em>善意</em>变成日常</h2>
-        <p>注册后即可报名全市各类志愿活动，服务时长自动累计，可用于评优与证明开具。</p>
+        <p>注册时选择你的身份：志愿者报名参与，组织者发布活动并审核报名，管理员治理平台与信誉分。</p>
 
         <div class="demo-list">
-          <div class="demo-label">注 册 后 可 以 做 什 么</div>
+          <div class="demo-label">不 同 身 份 可 以 做 什 么</div>
           <div class="demo" style="cursor: default">
-            <span class="ico"><i class="bi bi-compass"></i></span>
+            <span class="ico"><i class="bi bi-person-heart"></i></span>
             <div class="txt">
-              <div class="t1">浏览与报名活动</div>
-              <div class="t2">按分类筛选，实时查看余位</div>
+              <div class="t1">志愿者</div>
+              <div class="t2">浏览报名 · 累计工时 · 信誉分</div>
             </div>
           </div>
           <div class="demo" style="cursor: default">
-            <span class="ico"><i class="bi bi-clock-history"></i></span>
+            <span class="ico"><i class="bi bi-megaphone"></i></span>
             <div class="txt">
-              <div class="t1">累计服务工时</div>
-              <div class="t2">每次服务结束后由组织者认定</div>
+              <div class="t1">组织者</div>
+              <div class="t2">发布活动 · 审核自己活动的报名 · 认定工时</div>
             </div>
           </div>
           <div class="demo" style="cursor: default">
-            <span class="ico"><i class="bi bi-patch-check"></i></span>
+            <span class="ico"><i class="bi bi-shield-check"></i></span>
             <div class="txt">
-              <div class="t1">生成服务记录</div>
-              <div class="t2">报名与工时全程留痕，可追溯</div>
+              <div class="t1">管理员</div>
+              <div class="t2">全站看板 · 用户与信誉分治理</div>
             </div>
           </div>
         </div>
@@ -40,11 +40,29 @@
     <main class="auth-main">
       <div class="auth-card">
         <div class="eyebrow">Join us</div>
-        <h1>注册志愿者账号</h1>
-        <div class="desc">填写基本信息即可完成注册，默认角色为志愿者。</div>
+        <h1>{{ roleTitle }}</h1>
+        <div class="desc">填写基本信息，并选择你要注册的身份（管理员需总管理员认证）。</div>
 
         <div class="form-box">
           <form @submit.prevent="onSubmit">
+            <div class="field">
+              <label class="label">注册身份<span class="req">*</span></label>
+              <div class="role-picker">
+                <button
+                  v-for="r in roles"
+                  :key="r.key"
+                  type="button"
+                  class="role-card"
+                  :class="{ active: form.role === r.key }"
+                  @click="form.role = r.key"
+                >
+                  <i class="bi" :class="r.icon"></i>
+                  <span class="t">{{ r.name }}</span>
+                  <span class="d">{{ r.desc }}</span>
+                </button>
+              </div>
+            </div>
+
             <div class="field">
               <label class="label">用户名<span class="req">*</span></label>
               <input v-model.trim="form.username" class="input" placeholder="2-20 个字符，建议用拼音或英文" />
@@ -76,14 +94,25 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../api'
 import { toast } from '../utils/toast'
 
 const router = useRouter()
 const loading = ref(false)
-const form = reactive({ username: '', phone: '', password: '', skills: '' })
+const form = reactive({ role: 'volunteer', username: '', phone: '', password: '', skills: '' })
+
+const roles = [
+  { key: 'volunteer', name: '志愿者', desc: '报名活动、累计工时', icon: 'bi-person-heart' },
+  { key: 'organizer', name: '组织者', desc: '发布活动、审核报名', icon: 'bi-megaphone' },
+  { key: 'admin', name: '管理员', desc: '需总管理员认证', icon: 'bi-shield-check' }
+]
+
+const roleTitle = computed(() => {
+  const r = roles.find((x) => x.key === form.role)
+  return `注册${r ? r.name : '志愿者'}账号`
+})
 
 async function onSubmit() {
   if (!form.username || !form.phone || !form.password) return toast.error('请填写完整信息')
@@ -96,9 +125,14 @@ async function onSubmit() {
       username: form.username,
       phone: form.phone,
       password: form.password,
+      role: form.role,
       skills: form.skills.split(',').map((s) => s.trim()).filter(Boolean)
     })
-    toast.success('注册成功，请登录')
+    if (form.role === 'admin') {
+      toast.success('管理员申请已提交，需总管理员认证通过后才能登录')
+    } else {
+      toast.success(`注册成功，你已成为${roles.find((r) => r.key === form.role).name}，请登录`)
+    }
     router.push('/login')
   } catch (e) {
     toast.error(e.message)

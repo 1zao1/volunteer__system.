@@ -13,6 +13,7 @@ import com.volunteer.mapper.UserMapper;
 import com.volunteer.service.ActivityService;
 import com.volunteer.service.AttendanceService;
 import com.volunteer.service.RegistrationService;
+import com.volunteer.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -86,11 +87,10 @@ public class AdminController {
         Map<String, Long> bands = new LinkedHashMap<>();
         bands.put("95–100 优秀", 0L);
         bands.put("85–94 正常", 0L);
-        bands.put("80–84 偏低", 0L);
-        bands.put("低于 80 受限", 0L);
+        bands.put("低于 85 需提示", 0L);
         for (User u : users) {
             int c = u.getCreditScore() == null ? 100 : u.getCreditScore();
-            String k = c >= 95 ? "95–100 优秀" : c >= 85 ? "85–94 正常" : c >= 80 ? "80–84 偏低" : "低于 80 受限";
+            String k = c >= 95 ? "95–100 优秀" : c >= 85 ? "85–94 正常" : "低于 85 需提示";
             bands.merge(k, 1L, Long::sum);
         }
         List<Map<String, Object>> res = new ArrayList<>();
@@ -106,7 +106,7 @@ public class AdminController {
     private List<Map<String, Object>> lowCreditUsers() {
         List<Map<String, Object>> res = new ArrayList<>();
         for (User u : userMapper.selectList(new LambdaQueryWrapper<User>()
-                .lt(User::getCreditScore, 90)
+                .lt(User::getCreditScore, UserService.CREDIT_FLOOR)
                 .orderByAsc(User::getCreditScore))) {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("id", u.getId());
@@ -264,6 +264,44 @@ public class AdminController {
             u.setCreditScore(score);
         }
         userMapper.updateById(u);
+        return Result.success();
+    }
+
+    /* ================= 管理员认证（注册为管理员需总管理员确认） ================= */
+    @GetMapping("/pending-admins")
+    public Result<?> pendingAdmins(HttpServletRequest req) {
+        requireAdmin(req);
+        List<User> list = userMapper.selectList(new LambdaQueryWrapper<User>()
+                .eq(User::getRole, "admin_pending")
+                .orderByDesc(User::getId));
+        List<Map<String, Object>> res = new ArrayList<>();
+        for (User u : list) {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("id", u.getId());
+            m.put("username", u.getUsername());
+            m.put("phone", u.getPhone());
+            m.put("createTime", u.getCreateTime() == null ? null : u.getCreateTime().format(FMT));
+            res.add(m);
+        }
+        return Result.success(res);
+    }
+
+    @PostMapping("/pending-admins/{id}/approve")
+    public Result<?> approveAdmin(@PathVariable Long id, HttpServletRequest req) {
+        requireAdmin(req);
+        User u = userMapper.selectById(id);
+        if (u == null || !"admin_pending".equals(u.getRole())) throw new RuntimeException("该申请不存在或已处理");
+        u.setRole("admin");
+        userMapper.updateById(u);
+        return Result.success();
+    }
+
+    @PostMapping("/pending-admins/{id}/reject")
+    public Result<?> rejectAdmin(@PathVariable Long id, HttpServletRequest req) {
+        requireAdmin(req);
+        User u = userMapper.selectById(id);
+        if (u == null || !"admin_pending".equals(u.getRole())) throw new RuntimeException("该申请不存在或已处理");
+        userMapper.deleteById(id);
         return Result.success();
     }
 
