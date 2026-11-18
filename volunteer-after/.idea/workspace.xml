@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fc0e3ea0-1be7-4115-b91e-ac35420620ef" name="更改" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="customMavenHome" value="D:\java_idea\Maven\apache-maven-3.10.1-bin\apache-maven-3.10.1" />
+        <option name="mavenHomeTypeForPersistence" value="CUSTOM" />
+        <option name="userSettingsFile" value="D:\java_idea\Maven\apache-maven-3.10.1-bin\apache-maven-3.10.1\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="MavenRunner">
+    <option name="jreName" value="openjdk-17" />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0000002663979943" />
+      <entry key="MS500" value="1.1022589856043605" />
+      <entry key="S2" value="2.2868180414483708" />
+      <entry key="S5" value="3.798433424544496" />
+      <entry key="S10" value="6.324188125227684" />
+      <entry key="S30" value="11.383178925890835" />
+      <entry key="S60" value="14.717260227881109" />
+      <entry key="M2" value="21.1401227930104" />
+      <entry key="M5" value="37.053226719651654" />
+      <entry key="M10" value="50.10132638529689" />
+      <entry key="M15" value="56.30903100151134" />
+      <entry key="M30" value="63.83260585769657" />
+      <entry key="H1" value="68.1870828089133" />
+      <entry key="H2" value="70.5329431118755" />
+      <entry key="H4" value="71.75088799290121" />
+      <entry key="D1" value="72.78961235553308" />
+      <entry key="W1" value="72.9698901860202" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.9659365854525228" />
+      <entry key="MS500" value="1.0945186051224802" />
+      <entry key="S2" value="2.2823428337501834" />
+      <entry key="S5" value="3.7927330443088603" />
+      <entry key="S10" value="6.315769782512904" />
+      <entry key="S30" value="11.376404514290723" />
+      <entry key="S60" value="14.712817462925539" />
+      <entry key="M2" value="21.137050954404064" />
+      <entry key="M5" value="37.050916194739905" />
+      <entry key="M10" value="50.099622956862476" />
+      <entry key="M15" value="56.30770675462768" />
+      <entry key="M30" value="63.8318245061309" />
+      <entry key="H1" value="68.18665657222971" />
+      <entry key="H2" value="70.53272027108719" />
+      <entry key="H4" value="71.75077402990205" />
+      <entry key="D1" value="72.78959299866008" />
+      <entry key="W1" value="72.96988741172999" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="3MDWeJiaOSe4GQQxb2HRg4I5L25" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/school_practice/volunteer/volunteer-after",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="fc0e3ea0-1be7-4115-b91e-ac35420620ef" name="更改" comment="" />
+      <created>1794885718146</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1794885718146</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
