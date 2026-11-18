@@ -9,6 +9,7 @@ const routes = [
   { path: '/activity/:id', component: () => import('../views/ActivityDetail.vue') },
   { path: '/my-registrations', component: () => import('../views/MyRegistrations.vue') },
   { path: '/my-hours', component: () => import('../views/MyHours.vue') },
+  { path: '/profile', component: () => import('../views/Profile.vue') },
   {
     path: '/dashboard',
     component: () => import('../views/AdminDashboard.vue'),
@@ -22,7 +23,7 @@ const routes = [
   {
     path: '/admin/audit',
     component: () => import('../views/AdminAudit.vue'),
-    meta: { roles: ['admin', 'organizer'] }
+    meta: { roles: ['organizer'] }
   },
   {
     path: '/admin/users',
@@ -42,6 +43,7 @@ router.beforeEach((to) => {
   if (!to.meta.guest && !auth.isLogin) return '/login'
   if (to.meta.guest && auth.isLogin) return '/activities'
   if (to.meta.roles && !to.meta.roles.includes(auth.role)) return '/activities'
+  return true
 })
 
 export default router

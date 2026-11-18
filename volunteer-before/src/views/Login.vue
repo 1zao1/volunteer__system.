@@ -3,11 +3,11 @@
     <aside class="auth-side">
       <div>
         <div class="brand">
-          <span class="logo-mark"><i class="bi bi-heart-pulse"></i></span>
-          <span>志愿汇 · Volunteer Hub</span>
+          <span class="logo-mark"><i class="bi bi-stars"></i></span>
+          <span>予光 · YuGuang</span>
         </div>
-        <h2>让每一次<em>付出</em><br />都被看见、被记录</h2>
-        <p>发布活动、招募志愿者、审核报名、认定工时，一个平台跑完整个公益链路。</p>
+        <h2>把善意<em>交给光</em><br />让每一次付出都有回响</h2>
+        <p>发布活动、招募志愿者、审核报名、认定工时、记录信誉——一个平台跑完整个公益链路。</p>
 
         <div class="demo-list">
           <div class="demo-label">体 验 账 号 · 点 击 即 登 录</div>
@@ -26,13 +26,13 @@
           </div>
         </div>
       </div>
-      <footer>© 2026 志愿汇 · 社区志愿服务信息化平台</footer>
+      <footer>© 2026 予光 · 社区志愿服务信息化平台</footer>
     </aside>
 
     <main class="auth-main">
       <div class="auth-card">
         <div class="eyebrow">Welcome back</div>
-        <h1>登录你的志愿账户</h1>
+        <h1>登录予光</h1>
         <div class="desc">使用体验账号或自行注册，登录后按角色进入不同的工作台。</div>
 
         <div class="form-box">
@@ -85,30 +85,38 @@ const demos = [
     username: 'volunteer01',
     password: '123456',
     title: '志愿者视角',
-    desc: '浏览活动 · 报名 · 查看工时',
+    desc: '浏览活动 · 报名 · 查工时与信誉分',
     icon: 'bi-person-heart'
   },
   {
     username: 'organizer01',
     password: '123456',
     title: '组织者视角',
-    desc: '发布活动 · 审核报名 · 发工时',
+    desc: '发布活动 · 审核自已活动的报名 · 发工时',
     icon: 'bi-megaphone'
   },
   {
     username: 'admin',
     password: '123456',
     title: '管理员视角',
-    desc: '全站数据看板与活动管理',
+    desc: '全站看板 · 用户与信誉分治理',
     icon: 'bi-shield-check'
   }
 ]
 
 async function signIn(username, password) {
   const res = await api.login({ username, password })
-  auth.setSession(res.token, { id: res.id, name: res.name, role: res.role })
-  toast.success(`欢迎回来，${res.name}`)
-  router.push('/activities')
+  auth.setSession(res.token, {
+    id: res.id,
+    name: res.name,
+    nickname: res.nickname,
+    avatar: res.avatar,
+    signature: res.signature,
+    creditScore: res.creditScore,
+    role: res.role
+  })
+  toast.success(`欢迎回来，${res.nickname || res.name}`)
+  router.push(res.role === 'volunteer' ? '/activities' : '/dashboard')
 }
 
 async function onSubmit() {

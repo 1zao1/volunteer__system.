@@ -5,6 +5,10 @@ export default {
   login: (data) => request.post('/auth/login', data),
   register: (data) => request.post('/auth/register', data),
 
+  // 个人资料
+  getProfile: () => request.get('/profile'),
+  updateProfile: (data) => request.put('/profile', data),
+
   // 活动（公开）
   getActivities: (params) => request.get('/activities', { params }),
   getActivity: (id) => request.get(`/activities/${id}`),
@@ -26,10 +30,10 @@ export default {
   changeActivityStatus: (id, status) => request.patch(`/admin/activities/${id}/status`, { status }),
   deleteActivity: (id) => request.delete(`/admin/activities/${id}`),
 
-  // 管理端：报名审核与工时发放
+  // 管理端：报名审核与工时
   getRegistrations: (status) => request.get('/admin/registrations', { params: { status } }),
   auditRegistration: (id, status) => request.post(`/admin/registrations/${id}/audit`, { status }),
-  getPendingHours: () => request.get('/admin/registrations', { params: { status: 'approved' } }),
+  markAbsent: (id) => request.post(`/admin/registrations/${id}/absent`),
   issueHours: (registrationId, hours) => request.post('/admin/attendance', { registrationId, hours }),
 
   // 管理端：用户与角色（仅 admin）

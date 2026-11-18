@@ -124,6 +124,17 @@ async function load() {
 
 async function signup(a) {
   if (auth.role === 'admin') return toast.error('管理员请到「活动管理」中操作')
+  if (auth.role === 'organizer' && a.organizerId === auth.user?.id) {
+    return toast.error('这是你发布的活动，不能报名自己的活动')
+  }
+  const credit = auth.creditScore
+  if (credit < 80) {
+    return toast.error(`你当前信誉分为 ${credit} 分，暂不能报名新活动，每 2 小时会恢复 1 分`)
+  }
+  if (credit <= 85) {
+    const ok = window.confirm(`您当前信誉分为${credit}分，若再次违约你就会成为“低信誉志愿者”。确定继续报名吗？`)
+    if (!ok) return
+  }
   try {
     await api.signup(a.id)
     toast.success('报名成功，等待组织者审核')

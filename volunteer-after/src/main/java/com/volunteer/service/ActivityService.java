@@ -52,21 +52,23 @@ public class ActivityService {
         if (!StringUtils.hasText(a.getStatus())) a.setStatus("published");
         if (a.getMaxCount() == null || a.getMaxCount() <= 0) a.setMaxCount(20);
         if (a.getHours() == null || a.getHours() <= 0) a.setHours(1);
+        if (!StringUtils.hasText(a.getCover())) a.setCover(coverByCategory(a.getCategory()));
         validate(a);
         activityMapper.insert(a);
     }
 
     public void update(Activity a) {
+        if (a.getHours() == null) a.setHours(detail(a.getId()).getHours());
         validate(a);
         Activity old = detail(a.getId());
         if (a.getMaxCount() != null && a.getMaxCount() < old.getSignedCount()) {
             throw new RuntimeException("名额上限不能小于已报名人数（" + old.getSignedCount() + "）");
         }
-        // 保持不可被前端覆盖的字段
         a.setSignedCount(old.getSignedCount());
         a.setOrganizerId(old.getOrganizerId());
         a.setCreateTime(old.getCreateTime());
         if (!StringUtils.hasText(a.getStatus())) a.setStatus(old.getStatus());
+        if (!StringUtils.hasText(a.getCover())) a.setCover(old.getCover());
         activityMapper.updateById(a);
     }
 
@@ -85,11 +87,29 @@ public class ActivityService {
         activityMapper.deleteById(id);
     }
 
+    /** 分类 → 内置封面名，前端 assets/covers 下同名图片 */
+    public static String coverByCategory(String category) {
+        if (category == null) return "community";
+        switch (category) {
+            case "医疗健康": return "medical";
+            case "文化服务": return "culture";
+            case "公益宣传": return "publicity";
+            case "社区服务": return "community";
+            case "教育助学": return "education";
+            case "环境保护": return "environment";
+            case "应急救援": return "rescue";
+            default: return "community";
+        }
+    }
+
     private void validate(Activity a) {
         if (!StringUtils.hasText(a.getTitle())) throw new RuntimeException("活动名称不能为空");
         if (!StringUtils.hasText(a.getLocation())) throw new RuntimeException("活动地点不能为空");
         if (a.getStartTime() == null || a.getEndTime() == null) throw new RuntimeException("请填写活动起止时间");
         if (!a.getEndTime().isAfter(a.getStartTime())) throw new RuntimeException("结束时间必须晚于开始时间");
+        if (a.getSignupDeadline() != null && a.getSignupDeadline().isAfter(a.getStartTime())) {
+            throw new RuntimeException("报名截止时间不能晚于活动开始时间");
+        }
         if (a.getHours() == null || a.getHours() <= 0) throw new RuntimeException("认定工时必须大于 0");
         if (a.getMaxCount() == null || a.getMaxCount() <= 0) throw new RuntimeException("招募人数必须大于 0");
     }

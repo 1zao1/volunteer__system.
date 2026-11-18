@@ -4,7 +4,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fc0e3ea0-1be7-4115-b91e-ac35420620ef" name="更改" comment="" />
+    <list default="true" id="fc0e3ea0-1be7-4115-b91e-ac35420620ef" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/VolunteerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/VolunteerApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/controller/AttendanceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/controller/AttendanceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/controller/RegistrationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/controller/RegistrationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/dto/LoginVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/dto/LoginVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/entity/Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/entity/Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/service/ActivityService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/service/ActivityService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/service/AttendanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/service/AttendanceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/service/RegistrationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/service/RegistrationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/volunteer/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/volunteer/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/api/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/ActivityCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/components/ActivityCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/components/NavBar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/components/NavBar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/store/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/store/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/styles/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/styles/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/utils/category.js" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/utils/category.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/ActivityList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/AdminActivities.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/AdminActivities.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/AdminAudit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/AdminAudit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/AdminDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/AdminDashboard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/MyHours.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/MyHours.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../volunteer-before/src/views/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../volunteer-before/src/views/Register.vue" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,23 +75,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.5088250803972996" />
-      <entry key="MS500" value="2.648094605448246" />
-      <entry key="S2" value="6.162338623865417" />
-      <entry key="S5" value="12.369955694241247" />
-      <entry key="S10" value="20.37684077260376" />
-      <entry key="S30" value="36.168740552579656" />
-      <entry key="S60" value="45.153431600840754" />
-      <entry key="M2" value="54.999853668167965" />
-      <entry key="M5" value="73.40969111036073" />
-      <entry key="M10" value="87.8003599120501" />
-      <entry key="M15" value="94.6230208806378" />
-      <entry key="M30" value="102.89735953090222" />
-      <entry key="H1" value="107.69273279183537" />
-      <entry key="H2" value="110.27856355202158" />
-      <entry key="H4" value="111.62182720033519" />
-      <entry key="D1" value="112.76783620665755" />
-      <entry key="W1" value="112.9667727111183" />
+      <entry key="MS100" value="1.0199019147550052" />
+      <entry key="MS500" value="1.8220765327851782" />
+      <entry key="S2" value="5.005609796570295" />
+      <entry key="S5" value="11.700471129731314" />
+      <entry key="S10" value="21.539048453647066" />
+      <entry key="S30" value="43.636450766737575" />
+      <entry key="S60" value="56.77172098176952" />
+      <entry key="M2" value="69.48635097103113" />
+      <entry key="M5" value="90.03495046127463" />
+      <entry key="M10" value="105.39536467276605" />
+      <entry key="M15" value="112.61784547709419" />
+      <entry key="M30" value="121.35327999825493" />
+      <entry key="H1" value="126.40867759149171" />
+      <entry key="H2" value="129.13329713292094" />
+      <entry key="H4" value="130.5483528328901" />
+      <entry key="D1" value="131.75547087861707" />
+      <entry key="W1" value="131.96500326983107" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -84,23 +113,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.4308065832109669" />
-      <entry key="MS500" value="2.6184315550325445" />
-      <entry key="S2" value="6.120873587663325" />
-      <entry key="S5" value="12.32543527964276" />
-      <entry key="S10" value="20.3370626157244" />
-      <entry key="S30" value="36.14290216710138" />
-      <entry key="S60" value="45.1369702033387" />
-      <entry key="M2" value="54.98997622631161" />
-      <entry key="M5" value="73.40444849751916" />
-      <entry key="M10" value="87.79714119639114" />
-      <entry key="M15" value="94.62067117575084" />
-      <entry key="M30" value="102.89605582659973" />
-      <entry key="H1" value="107.69204246393781" />
-      <entry key="H2" value="110.27820785823994" />
-      <entry key="H4" value="111.62164659805296" />
-      <entry key="D1" value="112.76780571269927" />
-      <entry key="W1" value="112.96676834505479" />
+      <entry key="MS100" value="0.9850596093644624" />
+      <entry key="MS500" value="1.8087395016204102" />
+      <entry key="S2" value="4.984465343400726" />
+      <entry key="S5" value="11.670049041233247" />
+      <entry key="S10" value="21.505895479026794" />
+      <entry key="S30" value="43.60995075790079" />
+      <entry key="S60" value="56.753638824842696" />
+      <entry key="M2" value="69.47517251186972" />
+      <entry key="M5" value="90.02904326718198" />
+      <entry key="M10" value="105.39178199746134" />
+      <entry key="M15" value="112.61524413984358" />
+      <entry key="M30" value="121.35184509814135" />
+      <entry key="H1" value="126.40792009562452" />
+      <entry key="H2" value="129.1329074278459" />
+      <entry key="H4" value="130.54815511329508" />
+      <entry key="D1" value="131.7554375158285" />
+      <entry key="W1" value="131.9649984935383" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{

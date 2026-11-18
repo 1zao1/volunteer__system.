@@ -23,12 +23,19 @@ public class Activity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime endTime;
 
+    /** 报名截止时间，为空表示活动开始前都可报名 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime signupDeadline;
+
     private Integer maxCount;
     private Integer signedCount;
     private Integer hours;
     private String description;
     private String status;
     private Long organizerId;
+
+    /** 封面：内置封面名（medical/culture/...）或图片 URL */
+    private String cover;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createTime;

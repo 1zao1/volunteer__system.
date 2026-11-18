@@ -20,6 +20,15 @@ public class User {
     private String skills;
     private Integer creditScore;
 
+    /** 昵称，未设置时前端回落为 username */
+    private String nickname;
+    /** 个性签名 */
+    private String signature;
+    /** 头像：预设标识（avatar:bi-person|#0a5c3f）或图片 dataURL */
+    private String avatar;
+    /** 信誉分恢复计时锚点：每满 2 小时恢复 1 分，直到 85 分封顶 */
+    private LocalDateTime creditTime;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createTime;
 }

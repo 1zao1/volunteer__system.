@@ -16,8 +16,13 @@ export const useAuthStore = defineStore('auth', {
     role: (s) => s.user?.role || '',
     roleName: (s) => ROLE_MAP[s.user?.role]?.name || '',
     roleIcon: (s) => ROLE_MAP[s.user?.role]?.icon || 'bi-person',
-    isAdmin: (s) => ['admin', 'organizer'].includes(s.user?.role),
-    initial: (s) => (s.user?.name || '?').slice(0, 1).toUpperCase()
+    isAdmin: (s) => s.user?.role === 'admin',
+    isOrganizer: (s) => s.user?.role === 'organizer',
+    displayName: (s) => s.user?.nickname || s.user?.name || '—',
+    creditScore: (s) => (s.user?.creditScore ?? 100),
+    initial: (s) => (s.user?.nickname || s.user?.name || '?').slice(0, 1).toUpperCase(),
+    avatar: (s) => s.user?.avatar || '',
+    signature: (s) => s.user?.signature || ''
   },
   actions: {
     setSession(token, user) {
@@ -25,6 +30,10 @@ export const useAuthStore = defineStore('auth', {
       this.user = user
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify(user))
+    },
+    patchUser(patch) {
+      this.user = { ...(this.user || {}), ...patch }
+      localStorage.setItem('user', JSON.stringify(this.user))
     },
     logout() {
       this.token = ''

@@ -6,6 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/attendance")
 public class AttendanceController {
@@ -13,9 +16,13 @@ public class AttendanceController {
     @Autowired
     private AttendanceService attendanceService;
 
+    /** 已认定工时 + 待认定工时一次返回，避免"做了活动却没有时长"的疑惑 */
     @GetMapping("/my")
     public Result<?> my(HttpServletRequest req) {
         Long userId = (Long) req.getAttribute("userId");
-        return Result.success(attendanceService.myHours(userId));
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("issued", attendanceService.myHours(userId));
+        m.put("pending", attendanceService.pendingHours(userId));
+        return Result.success(m);
     }
 }

@@ -4,7 +4,7 @@
       <div>
         <div class="brand">
           <span class="logo-mark"><i class="bi bi-heart-pulse"></i></span>
-          <span>志愿汇 · Volunteer Hub</span>
+          <span>予光 · YuGuang</span>
         </div>
         <h2>加入我们，<br />把<em>善意</em>变成日常</h2>
         <p>注册后即可报名全市各类志愿活动，服务时长自动累计，可用于评优与证明开具。</p>
@@ -34,7 +34,7 @@
           </div>
         </div>
       </div>
-      <footer>© 2026 志愿汇 · 社区志愿服务信息化平台</footer>
+      <footer>© 2026 予光 · 社区志愿服务信息化平台</footer>
     </aside>
 
     <main class="auth-main">

@@ -29,6 +29,8 @@ public class RegistrationService {
     private UserMapper userMapper;
     @Autowired
     private AttendanceMapper attendanceMapper;
+    @Autowired
+    private UserService userService;
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -36,20 +38,39 @@ public class RegistrationService {
         return t == null ? null : t.format(FMT);
     }
 
+    /**
+     * 报名。规则：
+     * 1) 只有 published 且未结束、未过报名截止时间的活动可报；
+     * 2) 不能报名自己发布的活动（避免"自己审核自己"）；
+     * 3) 信誉分低于 80 视为低信誉志愿者，暂停报名；
+     * 4) 名额用条件更新，避免并发超额。
+     */
     @Transactional
-    public Long signup(Long userId, Long activityId) {
+    public Long signup(Long userId, Long activityId, String role) {
         Activity a = activityMapper.selectById(activityId);
         if (a == null) throw new RuntimeException("活动不存在或已下架");
         if (!"published".equals(a.getStatus())) throw new RuntimeException("该活动暂未开放报名");
-        if (a.getEndTime() != null && a.getEndTime().isBefore(LocalDateTime.now())) {
+        LocalDateTime now = LocalDateTime.now();
+        if (a.getEndTime() != null && a.getEndTime().isBefore(now)) {
             throw new RuntimeException("该活动已经结束");
+        }
+        if (a.getSignupDeadline() != null && now.isAfter(a.getSignupDeadline())) {
+            throw new RuntimeException("报名已于 " + fmt(a.getSignupDeadline()) + " 截止");
+        }
+        if ("organizer".equals(role) && a.getOrganizerId() != null && a.getOrganizerId().equals(userId)) {
+            throw new RuntimeException("不能报名自己发布的活动，请到「报名审核」处理其他人");
+        }
+        User u = userMapper.selectById(userId);
+        int credit = u == null || u.getCreditScore() == null ? 100 : u.getCreditScore();
+        if (credit < UserService.CREDIT_BLOCK) {
+            throw new RuntimeException("低信誉志愿者（" + credit + " 分）暂不能报名新活动，每 2 小时会恢复 1 分");
         }
         if (regMapper.selectCount(new LambdaQueryWrapper<Registration>()
                 .eq(Registration::getUserId, userId)
-                .eq(Registration::getActivityId, activityId)) > 0) {
+                .eq(Registration::getActivityId, activityId)
+                .ne(Registration::getStatus, "absent")) > 0) {
             throw new RuntimeException("你已经报名过该活动了");
         }
-        // 条件更新：把“判满”与“自增”合成一条 SQL，避免并发超额
         int updated = activityMapper.update(null, new LambdaUpdateWrapper<Activity>()
                 .eq(Activity::getId, activityId)
                 .apply("signed_count < max_count")
@@ -68,7 +89,7 @@ public class RegistrationService {
     public void cancel(Long userId, Long regId) {
         Registration r = regMapper.selectById(regId);
         if (r == null || !r.getUserId().equals(userId)) throw new RuntimeException("报名记录不存在");
-        if (!"pending".equals(r.getStatus())) throw new RuntimeException("已审核的报名请联系组织者处理");
+        if (!"pending".equals(r.getStatus())) throw new RuntimeException("已审核的报名请联系活动组织者处理");
         regMapper.deleteById(regId);
         activityMapper.update(null, new LambdaUpdateWrapper<Activity>()
                 .eq(Activity::getId, r.getActivityId())
@@ -89,6 +110,7 @@ public class RegistrationService {
             m.put("activityId", r.getActivityId());
             m.put("activityTitle", a != null ? a.getTitle() : "活动已删除");
             m.put("category", a != null ? a.getCategory() : null);
+            m.put("cover", a != null ? a.getCover() : null);
             m.put("location", a != null ? a.getLocation() : null);
             m.put("startTime", a != null ? fmt(a.getStartTime()) : null);
             m.put("endTime", a != null ? fmt(a.getEndTime()) : null);
@@ -100,8 +122,11 @@ public class RegistrationService {
         return res;
     }
 
-    /** 管理端报名列表，status 支持 all / pending / approved / rejected */
-    public List<Map<String, Object>> listForAdmin(String status) {
+    /**
+     * 管理端报名列表。
+     * organizer 只能看到自己发布活动的报名；admin 只读全站。
+     */
+    public List<Map<String, Object>> listForAdmin(String status, Long operatorId, String role) {
         LambdaQueryWrapper<Registration> w = new LambdaQueryWrapper<Registration>()
                 .orderByDesc(Registration::getSignupTime)
                 .orderByDesc(Registration::getId);
@@ -109,51 +134,105 @@ public class RegistrationService {
             w.eq(Registration::getStatus, status);
         }
         List<Registration> list = regMapper.selectList(w);
+
         Set<Long> issuedIds = new HashSet<>();
         for (Attendance t : attendanceMapper.selectList(null)) {
             if (t.getRegistrationId() != null) issuedIds.add(t.getRegistrationId());
         }
+        boolean isOrganizer = "organizer".equals(role);
+
         List<Map<String, Object>> res = new ArrayList<>();
         for (Registration r : list) {
-            User u = userMapper.selectById(r.getUserId());
             Activity a = activityMapper.selectById(r.getActivityId());
+            // 组织者视角：只保留自己发布的活动
+            if (isOrganizer && (a == null || a.getOrganizerId() == null
+                    || !a.getOrganizerId().equals(operatorId))) {
+                continue;
+            }
+            User u = userMapper.selectById(r.getUserId());
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("id", r.getId());
             m.put("userId", r.getUserId());
-            m.put("username", u != null ? u.getUsername() : "用户已注销");
+            m.put("username", u != null ? displayName(u) : "用户已注销");
+            m.put("nickname", u != null ? displayName(u) : "用户已注销");
             m.put("phone", u != null ? u.getPhone() : null);
             m.put("skills", u != null ? u.getSkills() : null);
+            m.put("creditScore", u != null ? u.getCreditScore() : null);
             m.put("activityId", r.getActivityId());
             m.put("activityTitle", a != null ? a.getTitle() : "活动已删除");
+            m.put("organizerId", a != null ? a.getOrganizerId() : null);
             m.put("category", a != null ? a.getCategory() : null);
             m.put("hours", a != null ? a.getHours() : null);
             m.put("startTime", a != null ? fmt(a.getStartTime()) : null);
+            m.put("endTime", a != null ? fmt(a.getEndTime()) : null);
+            m.put("activityEnded", a != null && a.getEndTime() != null
+                    && a.getEndTime().isBefore(LocalDateTime.now()));
             m.put("status", r.getStatus());
             m.put("signupTime", fmt(r.getSignupTime()));
             m.put("issued", issuedIds.contains(r.getId()));
+            boolean owned = a != null && a.getOrganizerId() != null && a.getOrganizerId().equals(operatorId);
+            m.put("isSelf", r.getUserId().equals(operatorId));
+            m.put("canAudit", isOrganizer && owned && !r.getUserId().equals(operatorId));
             res.add(m);
         }
         return res;
     }
 
-    @Transactional
-    public void audit(Long regId, String status) {
-        if (!"approved".equals(status) && !"rejected".equals(status)) {
-            throw new RuntimeException("审核状态只能是 approved 或 rejected");
+    private String displayName(User u) {
+        return u.getNickname() != null && !u.getNickname().isBlank() ? u.getNickname() : u.getUsername();
+    }
+
+    /** 校验：当前操作人必须是该活动的组织者，且报名人不能是自己 */
+    private Activity requireOwner(Long regId, Long operatorId, String role) {
+        if (!"organizer".equals(role)) {
+            throw new RuntimeException("报名审核由活动组织者负责，管理员不参与审核");
         }
         Registration r = regMapper.selectById(regId);
         if (r == null) throw new RuntimeException("报名记录不存在");
+        Activity a = activityMapper.selectById(r.getActivityId());
+        if (a == null) throw new RuntimeException("活动已删除");
+        if (a.getOrganizerId() == null || !a.getOrganizerId().equals(operatorId)) {
+            throw new RuntimeException("只能处理自己发布的活动报名");
+        }
+        if (r.getUserId().equals(operatorId)) {
+            throw new RuntimeException("不能审核自己的报名");
+        }
+        return a;
+    }
+
+    @Transactional
+    public void audit(Long regId, String status, Long operatorId, String role) {
+        if (!"approved".equals(status) && !"rejected".equals(status)) {
+            throw new RuntimeException("审核状态只能是 approved 或 rejected");
+        }
+        requireOwner(regId, operatorId, role);
+        Registration r = regMapper.selectById(regId);
         if (!"pending".equals(r.getStatus())) throw new RuntimeException("该报名已处理过");
 
         r.setStatus(status);
         regMapper.updateById(r);
 
-        // 驳回时释放名额
         if ("rejected".equals(status)) {
             activityMapper.update(null, new LambdaUpdateWrapper<Activity>()
                     .eq(Activity::getId, r.getActivityId())
                     .apply("signed_count > 0")
                     .setSql("signed_count = signed_count - 1"));
         }
+    }
+
+    /** 标记缺席：删除已发放工时、扣 5 分信誉、报名状态置 absent */
+    @Transactional
+    public void markAbsent(Long regId, Long operatorId, String role) {
+        requireOwner(regId, operatorId, role);
+        Registration r = regMapper.selectById(regId);
+        if ("rejected".equals(r.getStatus())) throw new RuntimeException("已驳回的报名无需标记缺席");
+        if ("absent".equals(r.getStatus())) throw new RuntimeException("该报名已标记为缺席");
+
+        regMapper.update(null, new LambdaUpdateWrapper<Registration>()
+                .eq(Registration::getId, regId)
+                .set(Registration::getStatus, "absent"));
+        attendanceMapper.delete(new LambdaQueryWrapper<Attendance>()
+                .eq(Attendance::getRegistrationId, regId));
+        userService.deductCredit(r.getUserId(), 5);
     }
 }

@@ -4,7 +4,7 @@
   </router-link>
 
   <template v-if="a">
-    <section class="detail-head" :style="headStyle">
+    <section class="detail-head img-cover" :style="headStyle">
       <span class="cat-tag"><i class="bi" :class="style.icon"></i>{{ a.category }}</span>
       <h1>{{ a.title }}</h1>
       <div class="detail-meta">
@@ -13,7 +13,6 @@
         <span><i class="bi bi-hourglass-split"></i>{{ a.hours }} 小时工时</span>
         <span><i class="bi bi-people"></i>{{ a.signedCount }}/{{ a.maxCount }} 人已报名</span>
       </div>
-      <i class="bi ghost" :class="style.icon"></i>
     </section>
 
     <div class="detail-grid">
@@ -28,10 +27,10 @@
           <h2 style="font-size: 16px"><i class="bi bi-info-circle" style="color: var(--brand)"></i> 报名须知</h2>
         </div>
         <div class="prose" style="color: var(--muted); font-size: 14px">
-          1. 报名后状态为「待审核」，组织者会尽快处理，通过后请按时间到场签到；
-          2. 服务结束后由组织者在 24 小时内认定工时，可在「我的工时」查看；
+          1. 报名后状态为「待审核」，由该活动的组织者审核，其他组织者与管理员不能代审；
+          2. 活动结束后，已通过且未标记缺席的报名会自动结算工时，可在「我的工时」查看；
           3. 如需取消，请在开始前于「我的报名」中撤回，把名额留给其他志愿者；
-          4. 连续爽约会影响信用分，信用分低于 80 分将限制报名热门活动。
+          4. 报名后无故缺席将标记为「缺席」并扣除 5 分信誉分，低于 80 分暂停报名新活动（每 2 小时恢复 1 分）。
         </div>
       </div>
 
@@ -53,13 +52,21 @@
 
         <div style="margin: 14px 0 18px">
           <div class="kv"><span class="k">活动时间</span><span class="v">{{ range }}</span></div>
+          <div class="kv"><span class="k">报名截止</span><span class="v">{{ a.signupDeadline ? fmtTime(a.signupDeadline) : '活动开始前' }}</span></div>
           <div class="kv"><span class="k">服务地点</span><span class="v" style="max-width: 190px; text-align: right">{{ a.location }}</span></div>
           <div class="kv"><span class="k">认定工时</span><span class="v">{{ a.hours }} 小时</span></div>
           <div class="kv"><span class="k">报名状态</span><span class="v">{{ myStatusText }}</span></div>
         </div>
 
+        <button v-if="isOwner" class="btn btn-soft btn-block" disabled>
+          <i class="bi bi-megaphone"></i> 这是你发布的活动
+        </button>
+        <div v-else-if="auth.role === 'admin'" class="admin-note">
+          <i class="bi bi-info-circle"></i>
+          管理员不参与报名与审核，活动运营由组织者负责
+        </div>
         <button
-          v-if="!mine"
+          v-else-if="!mine"
           class="btn btn-primary btn-block"
           :disabled="ended || isFull || submitting"
           @click="signup"
@@ -85,7 +92,8 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../api'
-import { detailHeadStyle, styleOf, timeRange, isEnded, remainOf, percentOf } from '../utils/category'
+import { styleOf, timeRange, isEnded, remainOf, percentOf, fmtTime } from '../utils/category'
+import { coverUrl } from '../utils/covers'
 import { toast } from '../utils/toast'
 import { useAuthStore } from '../store/auth'
 
@@ -96,22 +104,28 @@ const mine = ref(null)
 const submitting = ref(false)
 
 const style = computed(() => styleOf(a.value?.category))
-const headStyle = computed(() => detailHeadStyle(a.value?.category))
+const headStyle = computed(() => {
+  const url = coverUrl(a.value?.cover, a.value?.category)
+  return {
+    backgroundImage: `linear-gradient(110deg, rgba(4,32,21,0.94) 0%, rgba(4,32,21,0.62) 55%, rgba(4,32,21,0.30) 100%), url(${url})`
+  }
+})
 const range = computed(() => timeRange(a.value?.startTime, a.value?.endTime))
 const ended = computed(() => isEnded(a.value))
 const remain = computed(() => remainOf(a.value))
 const isFull = computed(() => remain.value <= 0)
 const percent = computed(() => percentOf(a.value))
+const isOwner = computed(
+  () => auth.role === 'organizer' && a.value?.organizerId && a.value.organizerId === auth.user?.id
+)
 
 const stateText = computed(() =>
   ended.value ? '已结束' : isFull.value ? '已满员' : a.value?.status === 'draft' ? '未发布' : '招募中'
 )
-const statusCls = computed(() =>
-  ended.value ? 'grey' : isFull.value ? 'rose' : 'green'
-)
+const statusCls = computed(() => (ended.value ? 'grey' : isFull.value ? 'rose' : 'green'))
 const myStatusText = computed(() => {
   if (!mine.value) return '未报名'
-  return { pending: '待审核', approved: '已通过', rejected: '已驳回' }[mine.value.status] || mine.value.status
+  return { pending: '待审核', approved: '已通过', rejected: '已驳回', absent: '缺席' }[mine.value.status] || mine.value.status
 })
 
 async function load() {
@@ -123,7 +137,7 @@ async function load() {
   }
   try {
     a.value = await api.getActivity(id)
-    if (auth.role === 'volunteer') {
+    if (auth.role !== 'admin') {
       const regs = await api.getMyRegistrations()
       mine.value = (regs || []).find((r) => Number(r.activityId) === Number(id) && r.status !== 'rejected')
     }
@@ -133,6 +147,14 @@ async function load() {
 }
 
 async function signup() {
+  const credit = auth.creditScore
+  if (credit < 80) {
+    return toast.error(`你当前信誉分为 ${credit} 分，暂不能报名新活动，每 2 小时会恢复 1 分`)
+  }
+  if (credit <= 85) {
+    const ok = window.confirm(`您当前信誉分为${credit}分，若再次违约你就会成为“低信誉志愿者”。确定继续报名吗？`)
+    if (!ok) return
+  }
   submitting.value = true
   try {
     await api.signup(a.value.id)

@@ -2,7 +2,7 @@
   <div class="section-title">
     <div>
       <h2>我的工时</h2>
-      <div class="sub">工时由组织者在服务结束后认定，累计可用于评优与证明开具</div>
+      <div class="sub">已认定工时来自组织者确认；活动结束后自动结算，待认定部分会在此提示</div>
     </div>
     <router-link to="/activities" class="btn btn-soft btn-sm">
       <i class="bi bi-clock"></i> 参加更多活动
@@ -20,7 +20,7 @@
     </div>
     <div class="side-stats">
       <div>
-        <div class="n">{{ list.length }}</div>
+        <div class="n">{{ issued.length }}</div>
         <div class="l">服务次数</div>
       </div>
       <div>
@@ -34,14 +34,32 @@
     </div>
   </section>
 
+  <div v-if="pending.length" class="panel mt-24 pending-panel">
+    <div class="panel-head">
+      <h3><i class="bi bi-hourglass-split"></i> 待认定（{{ pending.length }}）</h3>
+      <span class="sub">这些活动的服务已完成，工时将在组织者确认或系统结算后计入</span>
+    </div>
+    <div v-for="x in pending" :key="x.id" class="tl pending">
+      <div class="tl-date">{{ fmtDate(x.endTime) }}</div>
+      <div>
+        <div class="tl-title">{{ x.activityTitle }}</div>
+        <div class="tl-sub">
+          <span v-if="x.category"><i class="bi bi-tag"></i> {{ x.category }}</span>
+          <span style="margin-left: 10px"><i class="bi bi-geo-alt"></i> {{ x.location || '—' }}</span>
+        </div>
+      </div>
+      <div class="tl-hours pending-hours">+{{ x.hours }}<small>h</small></div>
+    </div>
+  </div>
+
   <div class="panel mt-24">
     <div class="panel-head">
-      <h3>服务记录</h3>
-      <span class="sub">按时间倒序，共 {{ list.length }} 条</span>
+      <h3>已认定记录</h3>
+      <span class="sub">按时间倒序，共 {{ issued.length }} 条</span>
     </div>
 
-    <div v-if="list.length">
-      <div v-for="x in list" :key="x.id" class="tl">
+    <div v-if="issued.length">
+      <div v-for="x in issued" :key="x.id" class="tl">
         <div class="tl-date">{{ fmtDate(x.date) }}</div>
         <div>
           <div class="tl-title">{{ x.activityTitle }}</div>
@@ -57,8 +75,8 @@
     <EmptyState
       v-else-if="!loading"
       icon="bi-clock-history"
-      title="还没有工时记录"
-      desc="参加活动并完成服务后，组织者会为你认定工时。"
+      title="还没有已认定的工时"
+      desc="参加活动并完成服务后，组织者确认出席即可计入工时。"
     />
     <div v-else class="skeleton" style="height: 140px"></div>
   </div>
@@ -70,13 +88,16 @@ import api from '../api'
 import EmptyState from '../components/EmptyState.vue'
 import { fmtDate } from '../utils/category'
 import { toast } from '../utils/toast'
+import { useAuthStore } from '../store/auth'
 
-const list = ref([])
+const auth = useAuthStore()
+const issued = ref([])
+const pending = ref([])
 const loading = ref(true)
 
-const total = computed(() => list.value.reduce((s, x) => s + (Number(x.hours) || 0), 0))
-const activities = computed(() => new Set(list.value.map((x) => x.activityTitle)).size)
-const avg = computed(() => (list.value.length ? (total.value / list.value.length).toFixed(1) : 0))
+const total = computed(() => issued.value.reduce((s, x) => s + (Number(x.hours) || 0), 0))
+const activities = computed(() => new Set(issued.value.map((x) => x.activityTitle)).size)
+const avg = computed(() => (issued.value.length ? (total.value / issued.value.length).toFixed(1) : 0))
 
 const level = computed(() => {
   const h = total.value
@@ -85,13 +106,20 @@ const level = computed(() => {
   if (h >= 20) return '三星志愿者 · 累计 20 小时以上'
   if (h >= 10) return '二星志愿者 · 累计 10 小时以上'
   if (h > 0) return '一星志愿者 · 已开始记录服务时长'
-  return '尚未开始记录，先报名一个活动吧'
+  return pending.value.length ? '服务已完成，等待工时结算' : '尚未开始记录，先报名一个活动吧'
 })
 
 async function load() {
   loading.value = true
   try {
-    list.value = (await api.getMyHours()) || []
+    const data = await api.getMyHours()
+    if (Array.isArray(data)) {
+      issued.value = data
+      pending.value = []
+    } else {
+      issued.value = data?.issued || []
+      pending.value = data?.pending || []
+    }
   } catch (e) {
     toast.error(e.message)
   } finally {

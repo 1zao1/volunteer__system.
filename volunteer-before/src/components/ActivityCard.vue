@@ -1,9 +1,8 @@
 <template>
-  <article class="card">
-    <div class="a-cover" :style="cover">
+  <article class="card activity-card">
+    <div class="a-cover img-cover" :style="cover">
       <span class="cat-tag"><i class="bi" :class="style.icon"></i>{{ a.category }}</span>
       <span class="state-tag" :class="{ full: isFull }">{{ stateText }}</span>
-      <i class="bi ghost" :class="style.icon"></i>
     </div>
     <div class="a-body">
       <h3 class="a-title">{{ a.title }}</h3>
@@ -33,13 +32,19 @@
 
 <script setup>
 import { computed } from 'vue'
-import { coverStyle, styleOf, timeRange, isEnded, remainOf, percentOf } from '../utils/category'
+import { styleOf, timeRange, isEnded, remainOf, percentOf } from '../utils/category'
+import { coverUrl } from '../utils/covers'
 
 const props = defineProps({ a: { type: Object, required: true } })
 defineEmits(['signup'])
 
 const style = computed(() => styleOf(props.a.category))
-const cover = computed(() => coverStyle(props.a.category))
+const cover = computed(() => {
+  const url = coverUrl(props.a.cover, props.a.category)
+  return {
+    backgroundImage: `linear-gradient(180deg, rgba(6,40,26,0.32) 0%, rgba(6,40,26,0.86) 100%), url(${url})`
+  }
+})
 const range = computed(() => timeRange(props.a.startTime, props.a.endTime))
 const ended = computed(() => isEnded(props.a))
 const isFull = computed(() => remainOf(props.a) <= 0)

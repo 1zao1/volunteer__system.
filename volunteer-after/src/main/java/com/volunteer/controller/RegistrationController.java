@@ -23,7 +23,7 @@ public class RegistrationController {
     public Result<?> signup(@RequestBody Map<String, Long> body, HttpServletRequest req) {
         Long activityId = body.get("activityId");
         if (activityId == null) throw new RuntimeException("缺少活动 id");
-        Long id = registrationService.signup(uid(req), activityId);
+        Long id = registrationService.signup(uid(req), activityId, String.valueOf(req.getAttribute("role")));
         return Result.success(id);
     }
 

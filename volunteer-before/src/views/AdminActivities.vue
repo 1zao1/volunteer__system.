@@ -2,9 +2,11 @@
   <div class="section-title">
     <div>
       <h2>活动管理</h2>
-      <div class="sub">发布、编辑、上下架活动，报名人数与余位实时同步</div>
+      <div class="sub">
+        {{ canManage ? '发布、编辑、上下架活动，报名人数与余位实时同步' : '管理员仅可查看全站活动，发布与审核由组织者负责' }}
+      </div>
     </div>
-    <button class="btn btn-primary btn-sm" @click="openCreate">
+    <button v-if="canManage" class="btn btn-primary btn-sm" @click="openCreate">
       <i class="bi bi-plus-lg"></i> 新建活动
     </button>
   </div>
@@ -14,9 +16,10 @@
       <table class="table">
         <thead>
           <tr>
-            <th style="width: 30%">活动</th>
+            <th style="width: 26%">活动</th>
             <th>分类</th>
             <th>开始时间</th>
+            <th>报名截止</th>
             <th>报名 / 名额</th>
             <th>工时</th>
             <th>状态</th>
@@ -26,32 +29,39 @@
         <tbody>
           <tr v-for="a in list" :key="a.id">
             <td>
-              <div class="strong">{{ a.title }}</div>
-              <div class="muted" style="font-size: 12.5px">
-                <i class="bi bi-geo-alt"></i> {{ a.location }}
+              <div class="flex center gap-8">
+                <span class="thumb" :style="{ backgroundImage: `url(${coverUrl(a.cover, a.category)})` }"></span>
+                <div>
+                  <div class="strong">{{ a.title }}</div>
+                  <div class="muted" style="font-size: 12.5px">
+                    <i class="bi bi-geo-alt"></i> {{ a.location }}
+                  </div>
+                </div>
               </div>
             </td>
             <td>
               <span class="pill grey"><i class="bi" :class="styleOf(a.category).icon"></i> {{ a.category }}</span>
             </td>
             <td class="muted nowrap">{{ fmtTime(a.startTime) }}</td>
+            <td class="muted nowrap">{{ a.signupDeadline ? fmtTime(a.signupDeadline) : '—' }}</td>
             <td class="nowrap">{{ a.signedCount }} / {{ a.maxCount }}</td>
             <td class="nowrap">{{ a.hours }} h</td>
             <td>
               <span class="pill" :class="statusPill(a.status).cls">{{ statusPill(a.status).text }}</span>
             </td>
             <td>
-              <div class="flex gap-8" style="justify-content: flex-end">
+              <div v-if="canManage" class="flex gap-8" style="justify-content: flex-end">
                 <button class="btn btn-ghost btn-sm" @click="openEdit(a)">编辑</button>
                 <button class="btn btn-soft btn-sm" @click="toggle(a)">
                   {{ a.status === 'published' ? '下架' : '上架' }}
                 </button>
                 <button class="btn btn-danger btn-sm" @click="remove(a)">删除</button>
               </div>
+              <div v-else class="muted" style="font-size: 12px; text-align: right">只读</div>
             </td>
           </tr>
           <tr v-if="!list.length">
-            <td colspan="7" class="muted" style="text-align: center; padding: 34px">
+            <td colspan="8" class="muted" style="text-align: center; padding: 34px">
               还没有活动，点击右上角「新建活动」发布第一场
             </td>
           </tr>
@@ -62,7 +72,7 @@
 
   <!-- 新建 / 编辑弹窗 -->
   <div v-if="showModal" class="modal-mask" @click.self="showModal = false">
-    <div class="modal">
+    <div class="modal" style="max-width: 720px">
       <div class="modal-head">
         <div>
           <h3>{{ form.id ? '编辑活动' : '新建活动' }}</h3>
@@ -71,26 +81,38 @@
         <button class="btn-plain" @click="showModal = false"><i class="bi bi-x-lg"></i></button>
       </div>
 
-      <div class="field">
-        <label class="label">活动名称<span class="req">*</span></label>
-        <input v-model.trim="form.title" class="input" placeholder="如：社区义诊健康筛查" />
-      </div>
-
       <div class="form-row">
+        <div class="field" style="flex: 2">
+          <label class="label">活动名称<span class="req">*</span></label>
+          <input v-model.trim="form.title" class="input" placeholder="如：社区义诊健康筛查" />
+        </div>
         <div class="field">
           <label class="label">活动分类<span class="req">*</span></label>
           <select v-model="form.category" class="select">
-            <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+            <option v-for="c in CATEGORIES" :key="c" :value="c">{{ c }}</option>
           </select>
         </div>
-        <div class="field">
-          <label class="label">发布状态</label>
-          <select v-model="form.status" class="select">
-            <option value="published">立即上架</option>
-            <option value="draft">存为草稿</option>
-            <option value="closed">标记已结束</option>
-          </select>
+      </div>
+
+      <div class="field">
+        <label class="label">活动封面</label>
+        <div class="cover-picker">
+          <button
+            v-for="c in COVERS"
+            :key="c.key"
+            class="cover-thumb"
+            :class="{ active: form.cover === c.key }"
+            :style="{ backgroundImage: `url(${c.url})` }"
+            :title="c.name"
+            @click="form.cover = c.key"
+          >
+            <span>{{ c.name.split(' · ')[0] }}</span>
+          </button>
         </div>
+        <div class="field" style="margin-top: 10px">
+          <input v-model.trim="form.cover" class="input" placeholder="也可粘贴自定义图片地址 https://…" />
+        </div>
+        <div class="hint">默认按分类自动匹配，可点选上方插画或换成自己的图片链接</div>
       </div>
 
       <div class="field">
@@ -107,6 +129,10 @@
           <label class="label">结束时间<span class="req">*</span></label>
           <input v-model="form.endTime" type="datetime-local" class="input" />
         </div>
+        <div class="field">
+          <label class="label">报名截止</label>
+          <input v-model="form.signupDeadline" type="datetime-local" class="input" />
+        </div>
       </div>
 
       <div class="form-row">
@@ -118,6 +144,14 @@
           <label class="label">可认定工时（小时）<span class="req">*</span></label>
           <input v-model.number="form.hours" type="number" min="1" class="input" />
         </div>
+        <div class="field">
+          <label class="label">发布状态</label>
+          <select v-model="form.status" class="select">
+            <option value="published">立即上架</option>
+            <option value="draft">存为草稿</option>
+            <option value="closed">标记已结束</option>
+          </select>
+        </div>
       </div>
 
       <div class="field">
@@ -125,6 +159,7 @@
         <textarea
           v-model.trim="form.description"
           class="textarea"
+          rows="3"
           placeholder="岗位职责、注意事项、集合方式等，志愿者报名后会看到这段说明"
         ></textarea>
       </div>
@@ -140,26 +175,30 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import api from '../api'
-import { fmtTime, styleOf } from '../utils/category'
+import { fmtTime, styleOf, CATEGORIES } from '../utils/category'
+import { COVERS, coverUrl } from '../utils/covers'
 import { toast } from '../utils/toast'
+import { useAuthStore } from '../store/auth'
 
+const auth = useAuthStore()
+const canManage = computed(() => auth.role === 'organizer')
 const list = ref([])
 const showModal = ref(false)
 const saving = ref(false)
-
-const categories = ['医疗健康', '环境保护', '教育助学', '社区服务', '大型赛会', '公益宣传', '文化服务', '应急救援']
 
 const blank = () => ({
   id: 0,
   title: '',
   category: '社区服务',
+  cover: '',
   location: '',
   startTime: '',
   endTime: '',
+  signupDeadline: '',
   maxCount: 20,
-  hours: 4,
+  hours: 3,
   status: 'published',
   description: ''
 })
@@ -199,9 +238,11 @@ function openEdit(a) {
     id: a.id,
     title: a.title,
     category: a.category,
+    cover: a.cover || '',
     location: a.location,
     startTime: toInput(a.startTime),
     endTime: toInput(a.endTime),
+    signupDeadline: toInput(a.signupDeadline),
     maxCount: a.maxCount,
     hours: a.hours,
     status: a.status,
@@ -214,14 +255,19 @@ async function save() {
   if (!form.title || !form.location) return toast.error('活动名称和地点必填')
   if (!form.startTime || !form.endTime) return toast.error('请选择开始与结束时间')
   if (fromInput(form.endTime) <= fromInput(form.startTime)) return toast.error('结束时间必须晚于开始时间')
+  if (form.signupDeadline && fromInput(form.signupDeadline) > fromInput(form.startTime)) {
+    return toast.error('报名截止时间不能晚于活动开始时间')
+  }
 
   saving.value = true
   const payload = {
     title: form.title,
     category: form.category,
+    cover: form.cover,
     location: form.location,
     startTime: fromInput(form.startTime),
     endTime: fromInput(form.endTime),
+    signupDeadline: form.signupDeadline ? fromInput(form.signupDeadline) : null,
     maxCount: Number(form.maxCount),
     hours: Number(form.hours),
     status: form.status,
