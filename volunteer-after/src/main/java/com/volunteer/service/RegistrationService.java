@@ -42,10 +42,7 @@ public class RegistrationService {
      * 报名。规则：
      * 1) 只有 published 且未结束、未过报名截止时间的活动可报；
      * 2) 不能报名自己发布的活动（避免"自己审核自己"）；
-     * 3) 信誉分分级限制（组织者、志愿者、管理员一致）：
-     *    ≥85 正常，可同时持有至多 3 个未完成报名；
-     *    60~84 低信誉，只能同时持有 1 个未完成报名（做完才能报下一个）；
-     *    <60 失信，暂停报名新活动，只能等待每 2 小时 +1 分恢复；
+     * 3) 信誉分低于 85 视为低信誉（组织者同样适用），仍可报名，提示由前端给出；
      * 4) 名额用条件更新，避免并发超额。
      */
     @Transactional
@@ -64,17 +61,10 @@ public class RegistrationService {
             throw new RuntimeException("不能报名自己发布的活动，请到「报名审核」处理其他人");
         }
         User u = userMapper.selectById(userId);
+        // 信誉分低于 85 仍可报名（提示由前端给出），只是会被标记为低信誉
         int credit = u == null || u.getCreditScore() == null ? 100 : u.getCreditScore();
-        if (credit < UserService.CREDIT_MIN) {
-            throw new RuntimeException("您现在的信誉分为：" + credit + "，低于60分，暂不能报名新活动。"
-                    + "请每 2 小时恢复 1 分，直到 60 分以上再报名");
-        }
-        int limit = credit >= UserService.CREDIT_FLOOR ? 3 : 1;
-        long active = countActiveSignups(userId);
-        if (active >= limit) {
-            throw new RuntimeException("您现在的信誉分为：" + credit + "，低于85分，"
-                    + "只能同时申请 1 个活动。请先完成「已报名」中的服务，"
-                    + "信誉分每 2 小时恢复 1 分，直至达到85及以上");
+        if (credit < 0) {
+            throw new RuntimeException("信誉分异常，请联系管理员");
         }
         if (regMapper.selectCount(new LambdaQueryWrapper<Registration>()
                 .eq(Registration::getUserId, userId)
@@ -94,23 +84,6 @@ public class RegistrationService {
         r.setStatus("pending");
         regMapper.insert(r);
         return r.getId();
-    }
-
-    /** 统计该用户当前未完成（待审核 / 已通过且活动未结束）的报名数量 */
-    private long countActiveSignups(Long userId) {
-        List<Registration> regs = regMapper.selectList(new LambdaQueryWrapper<Registration>()
-                .eq(Registration::getUserId, userId)
-                .in(Registration::getStatus, "pending", "approved"));
-        if (regs.isEmpty()) return 0;
-        Set<Long> ids = new HashSet<>();
-        for (Registration r : regs) ids.add(r.getActivityId());
-        if (ids.isEmpty()) return 0;
-        LocalDateTime now = LocalDateTime.now();
-        long n = 0;
-        for (Activity a : activityMapper.selectBatchIds(ids)) {
-            if (a.getEndTime() == null || !a.getEndTime().isBefore(now)) n++;
-        }
-        return n;
     }
 
     @Transactional

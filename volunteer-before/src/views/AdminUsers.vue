@@ -41,40 +41,8 @@
       <div class="icon rose"><i class="bi bi-exclamation-triangle"></i></div>
       <div>
         <div class="num">{{ counts.lowCredit }}</div>
-        <div class="label">低信誉（&lt;85 分）</div>
+        <div class="label">信用分低于 90</div>
       </div>
-    </div>
-  </div>
-
-  <div v-if="pending.length" class="panel mt-24" style="border-color: #f0c36b; background: #fffdf6">
-    <div class="panel-head">
-      <h3>待认证的管理员申请（{{ pending.length }}）</h3>
-      <span class="muted" style="font-size: 12.5px">注册时选择「管理员」的账号需由总管理员确认后才能登录</span>
-    </div>
-    <div class="table-wrap">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>用户名</th>
-            <th>手机号</th>
-            <th>申请时间</th>
-            <th style="text-align: right">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="p in pending" :key="p.id">
-            <td class="strong">{{ p.username }}</td>
-            <td class="muted">{{ p.phone || '—' }}</td>
-            <td class="muted nowrap">{{ p.createTime || '—' }}</td>
-            <td>
-              <div class="flex gap-8" style="justify-content: flex-end">
-                <button class="btn btn-primary btn-sm" @click="approve(p)"><i class="bi bi-check2"></i> 通过</button>
-                <button class="btn btn-ghost btn-sm" @click="reject(p)"><i class="bi bi-x-lg"></i> 驳回</button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 
@@ -149,7 +117,7 @@
         <div>
           <label class="strong" style="font-size: 13px">信用分</label>
           <input v-model.number="form.creditScore" type="number" min="0" max="100" class="input" style="margin-top: 6px" />
-          <div class="hint">0–100，低于 85 分限制同时报名数为 1，低于 60 分暂停报名。</div>
+          <div class="hint">0–100，低于 85 分会在报名时提示为低信誉账号。</div>
         </div>
       </div>
       <div class="modal-foot">
@@ -168,7 +136,6 @@ import api from '../api'
 import { toast } from '../utils/toast'
 
 const users = ref([])
-const pending = ref([])
 const keyword = ref('')
 const err = ref('')
 const cur = ref(null)
@@ -188,16 +155,13 @@ const counts = computed(() => {
   const c = { volunteer: 0, organizer: 0, admin: 0, lowCredit: 0 }
   users.value.forEach((u) => {
     if (c[u.role] !== undefined) c[u.role]++
-    if (u.role === 'admin_pending') return
-    if ((u.creditScore ?? 100) < 85) c.lowCredit++
+    if ((u.creditScore ?? 100) < 90) c.lowCredit++
   })
   return c
 })
 
-const roleText = (r) =>
-  ({ volunteer: '志愿者', organizer: '组织者', admin: '管理员', admin_pending: '待认证管理员' }[r] || r)
-const roleCls = (r) =>
-  ({ volunteer: 'green', organizer: 'amber', admin: 'sky', admin_pending: 'grey' }[r] || 'grey')
+const roleText = (r) => ({ volunteer: '志愿者', organizer: '组织者', admin: '管理员' }[r] || r)
+const roleCls = (r) => ({ volunteer: 'green', organizer: 'amber', admin: 'sky' }[r] || 'grey')
 
 async function load() {
   err.value = ''
@@ -206,37 +170,6 @@ async function load() {
     users.value = Array.isArray(data) ? data : []
   } catch (e) {
     err.value = e.message
-    toast.error(e.message)
-  }
-  await loadPending()
-}
-
-async function loadPending() {
-  try {
-    const data = await api.getPendingAdmins()
-    pending.value = Array.isArray(data) ? data : []
-  } catch (e) {
-    pending.value = []
-  }
-}
-
-async function approve(p) {
-  try {
-    await api.approveAdmin(p.id)
-    toast.success(`已通过 ${p.username} 的管理员认证`)
-    await load()
-  } catch (e) {
-    toast.error(e.message)
-  }
-}
-
-async function reject(p) {
-  if (!window.confirm(`驳回 ${p.username} 的管理员申请？该注册记录将被删除。`)) return
-  try {
-    await api.rejectAdmin(p.id)
-    toast.success('已驳回并删除该申请')
-    await load()
-  } catch (e) {
     toast.error(e.message)
   }
 }

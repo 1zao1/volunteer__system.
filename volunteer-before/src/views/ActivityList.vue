@@ -128,10 +128,8 @@ async function signup(a) {
     return toast.error('这是你发布的活动，不能报名自己的活动')
   }
   const credit = auth.creditScore
-  if (credit < 60) {
-    return toast.error(`您现在的信誉分为：${credit}，低于60分，暂不能报名新活动，每 2 小时恢复 1 分，直到 60 分以上再报名`)
-  } else if (credit < 85) {
-    const ok = window.confirm(`您现在的信誉分为：${credit}，低于85分，需要做活动换取信誉分，2小时换取1信誉分，直至达到85及以上。低信誉期间同时只能有 1 个未完成的报名。确定继续报名吗？`)
+  if (credit < 85) {
+    const ok = window.confirm(`您现在的信誉分为：${credit}，低于85分，需要做活动换取信誉分，2小时换取1信誉分，直至达到85及以上。确定继续报名吗？`)
     if (!ok) return
   } else if (credit === 85) {
     const ok = window.confirm('您当前信誉分为85分，若再次违约你就会成为“低信誉志愿者”。确定继续报名吗？')

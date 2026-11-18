@@ -38,10 +38,5 @@ export default {
 
   // 管理端：用户与角色（仅 admin）
   getUsers: () => request.get('/admin/users'),
-  updateUser: (id, data) => request.patch(`/admin/users/${id}`, data),
-
-  // 管理端：管理员认证（仅 admin）
-  getPendingAdmins: () => request.get('/admin/pending-admins'),
-  approveAdmin: (id) => request.post(`/admin/pending-admins/${id}/approve`),
-  rejectAdmin: (id) => request.post(`/admin/pending-admins/${id}/reject`)
+  updateUser: (id, data) => request.patch(`/admin/users/${id}`, data)
 }

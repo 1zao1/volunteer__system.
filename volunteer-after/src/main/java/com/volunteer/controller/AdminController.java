@@ -267,44 +267,6 @@ public class AdminController {
         return Result.success();
     }
 
-    /* ================= 管理员认证（注册为管理员需总管理员确认） ================= */
-    @GetMapping("/pending-admins")
-    public Result<?> pendingAdmins(HttpServletRequest req) {
-        requireAdmin(req);
-        List<User> list = userMapper.selectList(new LambdaQueryWrapper<User>()
-                .eq(User::getRole, "admin_pending")
-                .orderByDesc(User::getId));
-        List<Map<String, Object>> res = new ArrayList<>();
-        for (User u : list) {
-            Map<String, Object> m = new LinkedHashMap<>();
-            m.put("id", u.getId());
-            m.put("username", u.getUsername());
-            m.put("phone", u.getPhone());
-            m.put("createTime", u.getCreateTime() == null ? null : u.getCreateTime().format(FMT));
-            res.add(m);
-        }
-        return Result.success(res);
-    }
-
-    @PostMapping("/pending-admins/{id}/approve")
-    public Result<?> approveAdmin(@PathVariable Long id, HttpServletRequest req) {
-        requireAdmin(req);
-        User u = userMapper.selectById(id);
-        if (u == null || !"admin_pending".equals(u.getRole())) throw new RuntimeException("该申请不存在或已处理");
-        u.setRole("admin");
-        userMapper.updateById(u);
-        return Result.success();
-    }
-
-    @PostMapping("/pending-admins/{id}/reject")
-    public Result<?> rejectAdmin(@PathVariable Long id, HttpServletRequest req) {
-        requireAdmin(req);
-        User u = userMapper.selectById(id);
-        if (u == null || !"admin_pending".equals(u.getRole())) throw new RuntimeException("该申请不存在或已处理");
-        userMapper.deleteById(id);
-        return Result.success();
-    }
-
     private void requireAdmin(HttpServletRequest req) {
         String role = String.valueOf(req.getAttribute("role"));
         if (!"admin".equals(role)) throw new RuntimeException("只有管理员可以进行用户管理");

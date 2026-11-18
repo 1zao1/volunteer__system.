@@ -24,10 +24,8 @@ public class UserService {
 
     /** 信誉分恢复上限：低于该分数时每 2 小时恢复 1 分，直到回到 85 */
     public static final int CREDIT_FLOOR = 85;
-    /** 低于该分数视为「低信誉」：报名数量受限，每 2 小时恢复 1 分 */
+    /** 低于该分数视为「低信誉」，报名前需提示，但允许参加活动换取恢复 */
     public static final int CREDIT_BLOCK = 85;
-    /** 低于该分数视为「失信」：暂停报名新活动，只能等时间恢复 */
-    public static final int CREDIT_MIN = 60;
 
     @Autowired
     private UserMapper userMapper;
@@ -51,8 +49,7 @@ public class UserService {
         if (!Arrays.asList("volunteer", "organizer", "admin").contains(role)) {
             throw new RuntimeException("注册角色只能是 volunteer / organizer / admin");
         }
-        // 管理员账号不能自助生效，先进待认证队列，由总管理员在「用户与信誉」页确认
-        u.setRole("admin".equals(role) ? "admin_pending" : role);
+        u.setRole(role);
         u.setCreditScore(100);
         u.setCreditTime(LocalDateTime.now());
         u.setSkills(joinSkills(dto.getSkills()));
@@ -76,9 +73,6 @@ public class UserService {
                 .eq(User::getUsername, dto.getUsername()));
         if (u == null || !u.getPassword().equals(dto.getPassword())) {
             throw new RuntimeException("用户名或密码错误");
-        }
-        if ("admin_pending".equals(u.getRole())) {
-            throw new RuntimeException("管理员账号正在等待总管理员认证，通过后才能登录");
         }
         LoginVO vo = new LoginVO();
         vo.setToken(jwtUtil.generate(u.getId(), u.getRole()));

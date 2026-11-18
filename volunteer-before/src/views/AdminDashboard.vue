@@ -69,7 +69,7 @@
           </div>
           <div v-if="!(d.creditDist || []).length" class="muted">暂无数据</div>
         </div>
-        <div class="hint">违约扣 5 分；低于 85 分即低信誉（同时只能 1 个未完成报名），低于 60 分暂停报名；每 2 小时恢复 1 分，上限 85 分。</div>
+        <div class="hint">低于 85 分即为低信誉，报名时会收到提示；每 2 小时自动恢复 1 分，上限 85 分。组织者与志愿者同样适用。</div>
       </div>
 
       <div class="panel">

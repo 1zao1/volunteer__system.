@@ -33,7 +33,7 @@
         <div class="credit-bar"><span :style="{ width: (profile.creditScore ?? 100) + '%' }" :class="{ low: (profile.creditScore ?? 100) < 85 }"></span></div>
         <div class="credit-desc">{{ profile.creditDesc || '信誉良好' }}</div>
       </div>
-      <div class="hint">违约扣 5 分；低于 85 分只能同时 1 个报名，低于 60 分暂停报名；每 2 小时恢复 1 分，上限 85 分。所有角色同样适用。</div>
+      <div class="hint">低于 85 分时每次报名都会提示；2 小时恢复 1 分，直到回到 85 分。组织者与志愿者同样适用。</div>
     </div>
 
     <div class="panel">

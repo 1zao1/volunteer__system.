@@ -1,48 +1,65 @@
 <template>
-  <div class="auth-container">
-    <main class="auth-content">
-      <div class="auth-card">
-        <div class="auth-header">
-          <p class="eyebrow">WELCOME GUYS</p>
-          <h1>登录予光</h1>
-          <p class="subtitle">登录后按角色进入不同的工作台。</p>
+  <div class="auth">
+    <aside class="auth-side">
+      <div>
+        <div class="brand">
+          <span class="logo-mark"><i class="bi bi-stars"></i></span>
+          <span>予光 · YuGuang</span>
         </div>
+        <h2>把善意<em>交给光</em><br />让每一次付出都有回响</h2>
+        <p>发布活动、招募志愿者、审核报名、认定工时、记录信誉——一个平台跑完整个公益链路。</p>
+
+        <div class="demo-list">
+          <div class="demo-label">体 验 账 号 · 点 击 即 登 录</div>
+          <div
+            v-for="d in demos"
+            :key="d.username"
+            class="demo"
+            @click="quickLogin(d)"
+          >
+            <span class="ico"><i class="bi" :class="d.icon"></i></span>
+            <div class="txt">
+              <div class="t1">{{ d.title }}</div>
+              <div class="t2">{{ d.username }} · {{ d.desc }}</div>
+            </div>
+            <i class="bi" :class="loadingUser === d.username ? 'bi-hourglass' : 'bi-arrow-up-right'"></i>
+          </div>
+        </div>
+      </div>
+      <footer>© 2026 予光 · 社区志愿服务信息化平台</footer>
+    </aside>
+
+    <main class="auth-main">
+      <div class="auth-card">
+        <div class="eyebrow">Welcome back</div>
+        <h1>登录予光</h1>
+        <div class="desc">使用体验账号或自行注册，登录后按角色进入不同的工作台。</div>
 
         <div class="form-box">
           <form @submit.prevent="onSubmit">
             <div class="field">
               <label class="label">用户名</label>
-              <input 
-                v-model.trim="form.username" 
-                class="input" 
-                type="text" 
-                placeholder="请输入用户名" 
-                autocomplete="username" 
-              />
+              <input v-model.trim="form.username" class="input" placeholder="请输入用户名" autocomplete="username" />
             </div>
             <div class="field">
               <label class="label">密码</label>
-              <input 
-                v-model.trim="form.password" 
-                type="password" 
-                class="input" 
-                placeholder="请输入密码" 
-                autocomplete="current-password" 
+              <input
+                v-model.trim="form.password"
+                type="password"
+                class="input"
+                placeholder="请输入密码"
+                autocomplete="current-password"
               />
             </div>
-            
-            <button 
-              class="btn-submit" 
-              :disabled="loading"
-            >
-              <i class="bi bi-box-arrow-in-right" style="margin-right: 6px;"></i>
-              {{ loading ? '登录中...' : '登录' }}
+            <button class="btn btn-primary btn-block" :disabled="loading" style="margin-top: 8px">
+              <i class="bi bi-box-arrow-in-right"></i>
+              {{ loading ? '登录中…' : '登 录' }}
             </button>
           </form>
         </div>
 
-        <div class="auth-footer">
-          还没有账号？<router-link to="/register">注册账号</router-link>
+        <div class="auth-foot">
+          还没有账号？<router-link to="/register">注册成为志愿者</router-link>
         </div>
       </div>
     </main>
@@ -58,145 +75,71 @@ import { toast } from '../utils/toast'
 
 const router = useRouter()
 const auth = useAuthStore()
-const loading = ref(false)
 
 const form = reactive({ username: '', password: '' })
+const loading = ref(false)
+const loadingUser = ref('')
+
+const demos = [
+  {
+    username: 'volunteer01',
+    password: '123456',
+    title: '志愿者视角',
+    desc: '浏览活动 · 报名 · 查工时与信誉分',
+    icon: 'bi-person-heart'
+  },
+  {
+    username: 'organizer01',
+    password: '123456',
+    title: '组织者视角',
+    desc: '发布活动 · 审核自已活动的报名 · 发工时',
+    icon: 'bi-megaphone'
+  },
+  {
+    username: 'admin',
+    password: '123456',
+    title: '管理员视角',
+    desc: '全站看板 · 用户与信誉分治理',
+    icon: 'bi-shield-check'
+  }
+]
+
+async function signIn(username, password) {
+  const res = await api.login({ username, password })
+  auth.setSession(res.token, {
+    id: res.id,
+    name: res.name,
+    nickname: res.nickname,
+    avatar: res.avatar,
+    signature: res.signature,
+    creditScore: res.creditScore,
+    role: res.role
+  })
+  toast.success(`欢迎回来，${res.nickname || res.name}`)
+  router.push(res.role === 'volunteer' ? '/activities' : '/dashboard')
+}
 
 async function onSubmit() {
   if (!form.username || !form.password) return toast.error('请填写用户名和密码')
   loading.value = true
   try {
-    const res = await api.login({ username: form.username, password: form.password })
-    auth.setSession(res.token, res)
-    toast.success(`欢迎回来，${res.nickname || res.name}`)
-    router.push(res.role === 'volunteer' ? '/activities' : '/dashboard')
+    await signIn(form.username, form.password)
   } catch (e) {
     toast.error(e.message)
   } finally {
     loading.value = false
   }
 }
+
+async function quickLogin(d) {
+  if (loadingUser.value) return
+  loadingUser.value = d.username
+  try {
+    await signIn(d.username, d.password)
+  } catch (e) {
+    toast.error(e.message + '（请确认已执行初始化数据脚本）')
+  } finally {
+    loadingUser.value = ''
+  }
+}
 </script>
-
-<style scoped>
-/* 关键修复：全屏 Flex 居中，允许页面出现滚动条防止被截断 */
-.auth-container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f8fafc;
-  padding: 40px 20px;
-  box-sizing: border-box;
-}
-
-.auth-content {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 480px;
-  background: #ffffff;
-  padding: 50px 45px;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.06);
-}
-
-.auth-header {
-  text-align: center;
-  margin-bottom: 36px;
-}
-
-.eyebrow {
-  font-size: 12px;
-  color: #10b981;
-  letter-spacing: 2px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.auth-header h1 {
-  font-size: 26px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  font-size: 14px;
-  color: #6b7280;
-  line-height: 1.5;
-}
-
-.field {
-  margin-bottom: 20px;
-}
-
-.label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 8px;
-}
-
-.input {
-  width: 100%;
-  height: 46px;
-  padding: 0 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #111827;
-  outline: none;
-  background-color: #f9fafb;
-  transition: all 0.2s;
-  box-sizing: border-box;
-}
-
-.input:focus {
-  border-color: #10b981;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-}
-
-.btn-submit {
-  width: 100%;
-  height: 46px;
-  border: none;
-  border-radius: 8px;
-  background-color: #10b981;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 12px;
-  transition: all 0.2s;
-}
-
-.btn-submit:hover:not(:disabled) {
-  background-color: #059669;
-}
-
-.btn-submit:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.auth-footer {
-  margin-top: 32px;
-  text-align: center;
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.auth-footer a {
-  color: #10b981;
-  text-decoration: none;
-  font-weight: 600;
-  margin-left: 4px;
-}
-</style>
